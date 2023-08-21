@@ -18,6 +18,6 @@
       "outDir": "./build",                                   /* Specify an output folder for all emitted files. */
     },
 
-    "include": ["src", "src/config.ts"]                           /* Skip type checking all .d.ts files. */
+    "include": ["src", "test"]                           /* Skip type checking all .d.ts files. */
   }
   
