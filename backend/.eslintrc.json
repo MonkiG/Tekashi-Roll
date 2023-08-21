@@ -5,6 +5,11 @@
           "extends": "standard-with-typescript",
           "parserOptions": {
             "project": "./backend/tsconfig.json"
+          },
+          "rules": {
+            "@typescript-eslint/no-extraneous-class": "off",
+            "@typescript-eslint/no-namespace": "off",
+            "@typescript-eslint/no-misused-promises": "off"
           }
         }
     ]
