@@ -19,16 +19,16 @@ export interface UserDto {
 
 export class User {
   password: string
-  name: string
-  phone: string
+  name?: string = undefined
+  phone?: string = undefined
   email: string
-  role: role
+  role?: role
   readonly connected: boolean = true
   constructor (user?: any) {
-    this.name = user.name ?? ''
+    this.name = user.name
     this.email = Utils.parseEmail(user.email)
     this.password = Utils.parseBasicData(user.password)
-    this.phone = user.phone ?? ''
+    this.phone = user.phone
     this.role = user.role ?? 'client'
   }
 
@@ -57,11 +57,13 @@ export class User {
   }
 
   public async logUser (): Promise<{ logged: boolean, token: string | null }> {
-    const bdUser = await UserServices.findByEmail(this.email, 'password')
+    const bdUser = await UserServices.findByEmail(this.email, 'password email')
 
     if (bdUser !== null) {
       const isSamePassword = await this.comparePassword(bdUser.password)
+
       const token = this.getToken()
+      console.log(isSamePassword)
       return { logged: isSamePassword, token: isSamePassword ? token : null }
     }
 

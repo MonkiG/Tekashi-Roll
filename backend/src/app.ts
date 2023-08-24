@@ -2,11 +2,12 @@ import express, { json } from 'express'
 import AuthRoutes from './routes/AuthRoutes'
 import ProductsRoutes from './routes/ProductsRoutes'
 import cors from 'cors'
-
+// import path from 'node:path'
 const app = express()
 
 app.use(cors())
 app.use(json())
+app.use('/public', express.static('public'))
 app.use(AuthRoutes.auth, AuthRoutes.router())
 app.use(ProductsRoutes.products, ProductsRoutes.router())
 
