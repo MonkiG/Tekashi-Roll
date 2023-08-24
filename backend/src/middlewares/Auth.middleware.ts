@@ -28,4 +28,23 @@ export default class AuthMiddlewares {
       res.status(500).json({ message: StatusMessages.STATUS_500 })
     }
   }
+
+  public static async isAdmin (req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { email } = req.body
+    try {
+      const user = await UserServices.findByEmail(email, 'role')
+      if (user !== null && user.role === 'admin') {
+        next()
+        return
+      }
+
+      if (user !== null && user.role === 'client') {
+        res.status(401).json({ message: `${StatusMessages.STATUS_401}, user doesn't have authorization, should be "Admin" but it's ${user.role}` })
+      }
+
+      res.status(401).json({ message: `${StatusMessages.STATUS_401}, user doesn't have authorization` })
+    } catch (error) {
+
+    }
+  }
 }
