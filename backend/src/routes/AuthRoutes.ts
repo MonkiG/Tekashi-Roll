@@ -4,15 +4,15 @@ import AuthMiddlewares from '../middlewares/Auth.middleware'
 
 export default class AuthRoutes {
   #router = Router()
-  public static Login = '/login'
-  public static Signup = '/signup'
-  public static Auth = '/auth'
+  public static login = '/login' // GET
+  public static signup = '/signup' // POST
+  public static auth = '/auth' // POST
   constructor () {
     this.#router.get('/', AuthControllers.main)
 
-    this.#router.post(AuthRoutes.Login, AuthMiddlewares.isRegistered, AuthControllers.login)
+    this.#router.post(AuthRoutes.login, AuthMiddlewares.isRegistered, AuthControllers.login)
 
-    this.#router.post(AuthRoutes.Signup, AuthMiddlewares.isRegistered, AuthControllers.signup)
+    this.#router.post(AuthRoutes.signup, AuthMiddlewares.isRegistered, AuthControllers.signup)
 
     this.#router.all('*', AuthControllers.methodNotAllowed)
   }

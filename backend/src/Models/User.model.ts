@@ -1,8 +1,7 @@
 import { Schema, model } from 'mongoose'
-import { type UserDto } from './dto/User.dto'
-import Bcrypt from '../helpers/Bcrypt'
+import { type User } from './dto/User.dto'
 
-const userSchema = new Schema<UserDto>({
+const userSchema = new Schema<User>({
   name: { type: String, required: true },
   phone: { type: String, required: true },
   email: { type: String, required: true },
@@ -14,9 +13,4 @@ const userSchema = new Schema<UserDto>({
   timestamps: true
 })
 
-userSchema.pre('save', async function (next) {
-  this.password = await Bcrypt.hashPassword(this.password)
-  next()
-})
-
-export const User = model('User', userSchema)
+export const UserSchema = model('User', userSchema)

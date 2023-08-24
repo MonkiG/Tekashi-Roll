@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 import StatusMessages from '../helpers/StatusMessages'
-import UserServices from '../helpers/UserServices'
+import { User } from '../Models/dto/User.dto'
 
 export default class AuthControllers {
   public static main (_req: Request, res: Response): void {
@@ -10,7 +10,8 @@ export default class AuthControllers {
   public static async login (req: Request, res: Response): Promise<void> {
     const { password, email } = req.body
 
-    const { logged, token } = await UserServices.logUser({ email, password })
+    const { logged, token } = await new User({ email, password }).logUser()
+
     if (logged) {
       res.status(200).json({ message: 'Logged correctly', token })
       return
@@ -22,7 +23,8 @@ export default class AuthControllers {
   public static async signup (req: Request, res: Response): Promise<void> {
     const { name, phone, email, password } = req.body
     try {
-      const { token } = await UserServices.createUser({ name, email, password, phone })
+      const user = await new User({ name, email, password, phone }).saveUser()
+      const token = user.getToken()
 
       res.status(201).json({ message: StatusMessages.STATUS_201, token })
     } catch (error) {
