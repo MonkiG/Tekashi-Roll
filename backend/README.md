@@ -3,11 +3,27 @@
 
 _I still working on the api_
 
-<!-- ## Routes
+## Routes
 
-### Route -->
-<!-- * **Method**
-    * "Endpoint" -->
+### Auth
+* **GET**
+    * "/auth"
+* **POST**
+    * "/auth/login"
+    * "/auth/signup
+### Products
+* **GET**
+    * "/products"
+    * "/products/:id"
+
+_This routes and methods should receive an auth token in the headers_
+
+* **POST**
+    * "/products"
+* **PATCH**
+    * "/products/:id"
+* **DELETE**
+    * "/products/:id"
 
 ## Developer 
 You need to have `Node.js` installed and have terminal access to follow next steps:
@@ -63,4 +79,6 @@ _This script compiles the code (using the same command as 'build') and runs the 
 * ts-node-dev
 * eslint-config-standard-with-typescript
 
-<!-- ## To do -->
+## To do
+- Email validation
+- Fix Multer folders logic
