@@ -1,15 +1,14 @@
 import app from './app'
 import config from './config'
-import mongoose from 'mongoose'
+import { Mongoose } from './helpers/Mongoose'
 
-const { DATABASE_TEST_NAME, DATABASE_NAME, NODE_ENV } = process.env
-
-mongoose.connect(config.DATABASE_URL, {
-  dbName: NODE_ENV === 'test' ? DATABASE_TEST_NAME : DATABASE_NAME
-}).then(() => {
-  app.listen(config.PORT, () => {
+const server = app.listen(config.PORT, async () => {
+  try {
+    await Mongoose.connect()
     console.log(`Server started on port ${config.PORT}`)
-  })
-}).catch(e => {
-  console.error('Error connecting database', e)
+  } catch (e) {
+    console.error('Error connecting database', e)
+  }
 })
+
+export default server

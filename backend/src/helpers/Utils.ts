@@ -3,6 +3,9 @@ import { ParseErrors } from './Errors'
 
 export default class Utils {
   public static parseBasicData (data: any): string {
+    if (data === undefined || data === null) {
+      throw new ParseErrors('Data don\'t provided')
+    }
     if (!this.isString(data)) {
       throw new ParseErrors('Data sent it\'s not a string')
     }
@@ -11,6 +14,10 @@ export default class Utils {
   }
 
   public static parseEmail (data: any): string {
+    if (data === undefined || data === null) {
+      throw new ParseErrors('Data don\'t provided')
+    }
+
     if (!this.isEmail(data)) {
       throw new ParseErrors('Data sent it\'s not email')
     }
@@ -24,6 +31,10 @@ export default class Utils {
     }
 
     return role
+  }
+
+  public static isNumber (data: any): boolean {
+    return !isNaN(data)
   }
 
   public static isEmail (data: any): boolean {

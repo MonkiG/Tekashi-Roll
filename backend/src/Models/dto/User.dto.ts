@@ -32,11 +32,11 @@ export class User {
     this.role = user.role ?? 'client'
   }
 
-  public getToken (): string {
+  #getToken (): string {
     return new Jwt(this.email).sign()
   }
 
-  public async saveUser (): Promise<this> {
+  public async saveUser (): Promise<{ user: User, token: string }> {
     Utils.parseBasicData(this.name)
     Utils.parseEmail(this.email)
     Utils.parseBasicData(this.password)
@@ -44,8 +44,9 @@ export class User {
     Utils.parseBasicData(this.role)
 
     await this.hashPassword()
+    const token = this.#getToken()
     await new UserSchema(this).save()
-    return this
+    return { user: this, token }
   }
 
   public async hashPassword (): Promise<void> {
@@ -62,8 +63,7 @@ export class User {
     if (bdUser !== null) {
       const isSamePassword = await this.comparePassword(bdUser.password)
 
-      const token = this.getToken()
-      console.log(isSamePassword)
+      const token = this.#getToken()
       return { logged: isSamePassword, token: isSamePassword ? token : null }
     }
 

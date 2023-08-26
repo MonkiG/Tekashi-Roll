@@ -23,8 +23,7 @@ export default class AuthControllers {
   public static async signup (req: Request, res: Response): Promise<void> {
     const { name, phone, email, password } = req.body
     try {
-      const user = await new User({ name, email, password, phone }).saveUser()
-      const token = user.getToken()
+      const { token } = await new User({ name, email, password, phone }).saveUser()
 
       res.status(201).json({ message: StatusMessages.STATUS_201, token })
     } catch (error) {
