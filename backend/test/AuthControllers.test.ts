@@ -1,20 +1,26 @@
-import { test, describe, expect, beforeAll } from 'vitest'
+import { test, describe, expect, beforeAll, afterAll } from 'vitest'
 import request from 'supertest'
 import app from '../src/app'
-import '../src/index'
 import AuthRoutes from '../src/routes/AuthRoutes'
-import { User } from '../src/Models/User.model'
+import { UserSchema } from '../src/Models/User.model'
+import { Mongoose } from '../src/helpers/Mongoose'
 
-describe('Auth Controllers test', () => {
+describe('Auth Controllers tests', () => {
   beforeAll(async () => {
-    await User.deleteMany({ email: 'raan.heam@gmail.com' })
+    await Mongoose.connect()
+    await UserSchema.deleteMany({ email: 'raan.heam@gmail.com' })
+    await UserSchema.deleteMany({ email: 'some.email@gmail.com' })
   })
 
-  describe(`POST ${AuthRoutes.Signup}`, () => {
+  afterAll(async () => {
+    await Mongoose.disconnect()
+  })
+
+  describe(`POST ${AuthRoutes.signup}`, () => {
     describe('Correct responses', () => {
       test('Should respond with status 201 and an auth token', async () => {
         const response = await request(app)
-          .post(`${AuthRoutes.Auth}${AuthRoutes.Signup}`)
+          .post(`${AuthRoutes.auth}${AuthRoutes.signup}`)
           .send({
             name: 'Ramón Hernández',
             phone: '322 146 37 29',
@@ -31,7 +37,7 @@ describe('Auth Controllers test', () => {
     describe('Wrong responses', () => {
       test('Should respond with status 409', async () => {
         const response = await request(app)
-          .post(`${AuthRoutes.Auth}${AuthRoutes.Signup}`)
+          .post(`${AuthRoutes.auth}${AuthRoutes.signup}`)
           .send({
             name: 'Ramón Hernández',
             phone: '322 146 37 29',
@@ -44,7 +50,7 @@ describe('Auth Controllers test', () => {
 
       test('Should respond with status 500', async () => {
         const response = await request(app)
-          .post(`${AuthRoutes.Auth}${AuthRoutes.Signup}`)
+          .post(`${AuthRoutes.auth}${AuthRoutes.signup}`)
           .send({
             name: 'Ramón Hernández',
             phone: '322 146 37 29',
@@ -58,11 +64,11 @@ describe('Auth Controllers test', () => {
     })
   })
 
-  describe(`POST ${AuthRoutes.Login}`, () => {
+  describe(`POST ${AuthRoutes.login}`, () => {
     describe('Correct responses', () => {
       test('Should respond with status 200 and an auth token', async () => {
         const response = await request(app)
-          .post(`${AuthRoutes.Auth}${AuthRoutes.Login}`)
+          .post(`${AuthRoutes.auth}${AuthRoutes.login}`)
           .send({
             email: 'raan.heam@gmail.com',
             password: 'somerandompassword'
@@ -73,31 +79,32 @@ describe('Auth Controllers test', () => {
         expect(response.body.token).toBeTruthy()
       })
     })
-  })
 
-  describe('Wrong responses', () => {
-    test('Should respond with status 404', async () => {
-      const response = await request(app)
-        .post(`${AuthRoutes.Auth}${AuthRoutes.Login}`)
-        .send({
-          email: 'some.email@gmail.com',
-          password: 'somerandompassword'
-        })
-        .set('Content-Type', 'application/json')
+    describe('Wrong responses', () => {
+      test('Should respond with status 404', async () => {
+        const response = await request(app)
+          .post(`${AuthRoutes.auth}${AuthRoutes.login}`)
+          .send({
+            email: 'some.email@gmail.com',
+            password: 'somerandompassword'
+          })
+          .set('Content-Type', 'application/json')
 
-      expect(response.statusCode).toBe(404)
-    })
-  })
-  test('Should respond with status 401', async () => {
-    const response = await request(app)
-      .post(`${AuthRoutes.Auth}${AuthRoutes.Login}`)
-      .send({
-        email: 'raan.heam@gmail.com',
-        password: 'somerandompasswordd'
+        expect(response.statusCode).toBe(404)
       })
-      .set('Content-Type', 'application/json')
 
-    expect(response.statusCode).toBe(401)
-    expect(response.body.token).toBeFalsy()
+      test('Should respond with status 401', async () => {
+        const response = await request(app)
+          .post(`${AuthRoutes.auth}${AuthRoutes.login}`)
+          .send({
+            email: 'raan.heam@gmail.com',
+            password: 'somerandompasswordd'
+          })
+          .set('Content-Type', 'application/json')
+
+        expect(response.statusCode).toBe(401)
+        expect(response.body.token).toBeFalsy()
+      })
+    })
   })
 })
