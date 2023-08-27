@@ -6,6 +6,7 @@ _I still working on the api_
 ## Routes
 
 ### Auth
+_This routes and methods receive the information by a json body_
 * **GET**
     * "/auth"
 * **POST**
@@ -18,12 +19,36 @@ _I still working on the api_
 
 _This routes and methods should receive an auth token in the headers_
 
-* **POST**
+* **POST** \
+_Products POST request receive the information by a form-data (It's necessary a image)_
+
     * "/products"
-* **PATCH**
-    * "/products/:id"
+* **PATCH** \
+_Products PATCH request receive the information by a form-data_
+
+    * "/products/:id" _This route should have a valid ObjectID_
+
 * **DELETE**
-    * "/products/:id"
+    * "/products" _This route receive the product id in a json body_
+
+### Subcategories
+* **GET**
+    * "/subcategories"
+    * "/subcategories/:id" _This route should have a valid ObjectId_
+
+_This routes and methods should receive an auth token in the headers and receive the information by a json body_
+
+* **POST**
+
+    * "/subcategories"
+
+* **PATCH**\
+_Need the subcategory id_
+    * "/subcategories"
+
+* **DELETE**\
+_Need the subcategory id_
+    * "/subcategories"
 
 ## Developer 
 You need to have `Node.js` installed and have terminal access to follow next steps:
@@ -47,13 +72,12 @@ You can run all unit test using "test" command:
 * **Run all tests**
 ```
     npm run test
-    or
-    npm run test:watch
+
 ```
 Or also use test:{name of test} to run just one test:
 * **Run just one test**
 ```
-    npm run test:register
+    npm run test AuthControllers.test.ts (nombre el archivo del test)
 ```
 _You can find more test scripts in the package.json file_
 
@@ -81,4 +105,7 @@ _This script compiles the code (using the same command as 'build') and runs the 
 
 ## To do
 - Email validation
+- Add password validation
 - Fix Multer folders logic
+- Add products categories
+- Add order and cart features (sockets)
