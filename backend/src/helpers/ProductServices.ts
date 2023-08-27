@@ -4,8 +4,10 @@ import { type ProductDto } from '../Models/dto/Product.dto'
 
 export default class ProductServices {
   public static async findAllProducts (): Promise<ProductDto[]> {
-    const products = ProductServices.convertToDto(await ProductSchema.find({}).exec())
-    return products as ProductDto[]
+    const products = await ProductSchema.find({}).populate({ path: 'category', select: '-products -subcategories' }).exec()
+    const parsederProducts = ProductServices.convertToDto(products)
+
+    return parsederProducts as ProductDto[]
   }
 
   public static async findById (id: string | ObjectId): Promise<ProductDto | null> {
@@ -41,7 +43,6 @@ export default class ProductServices {
           name: product.name,
           description: product.description,
           category: product.category,
-          subcategory: product.subcategory ?? undefined,
           price: product.price,
           imgUrl: product.imgUrl
         }
@@ -54,7 +55,6 @@ export default class ProductServices {
         name: products.name,
         description: products.description,
         category: products.category,
-        subcategory: products.subcategory ?? undefined,
         price: products.price,
         imgUrl: products.imgUrl
       }

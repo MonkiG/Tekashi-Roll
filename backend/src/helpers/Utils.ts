@@ -1,3 +1,4 @@
+import { type ObjectId, isValidObjectId } from 'mongoose'
 import { type role } from '../types'
 import { ParseErrors } from './Errors'
 
@@ -31,6 +32,14 @@ export default class Utils {
     }
 
     return role
+  }
+
+  public static parseObjectId (id: any): ObjectId {
+    if (!isValidObjectId(id)) {
+      throw new ParseErrors('Id it\'s not an ObjectId')
+    }
+
+    return id
   }
 
   public static isNumber (data: any): boolean {

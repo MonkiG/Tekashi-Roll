@@ -10,20 +10,24 @@ export default class AuthControllers {
   public static async login (req: Request, res: Response): Promise<void> {
     const { password, email } = req.body
 
-    const { logged, token } = await new User({ email, password }).logUser()
+    try {
+      const { logged, token } = await new User({ email, password }).logUser()
 
-    if (logged) {
-      res.status(200).json({ message: 'Logged correctly', token })
-      return
+      if (logged) {
+        res.status(200).json({ message: 'Logged correctly', token })
+        return
+      }
+
+      res.status(401).json({ message: 'Wrong password' })
+    } catch (e) {
+      res.status(500).json({ message: StatusMessages.STATUS_500 })
     }
-
-    res.status(401).json({ message: 'Wrong password' })
   }
 
   public static async signup (req: Request, res: Response): Promise<void> {
-    const { name, phone, email, password } = req.body
+    const { name, phone, email, password, role } = req.body
     try {
-      const { token } = await new User({ name, email, password, phone }).saveUser()
+      const { token } = await new User({ name, email, password, phone, role }).saveUser()
 
       res.status(201).json({ message: StatusMessages.STATUS_201, token })
     } catch (error) {

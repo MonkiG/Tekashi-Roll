@@ -4,14 +4,10 @@ import fs from 'node:fs/promises'
 
 export default class Files {
   #folderPath: string
-  #file: string
-  #fullPath: string
   multerUpload: any
 
-  constructor (folder: string, file?: string) {
+  constructor (folder: string, _file?: string) {
     this.#folderPath = path.join(process.cwd(), folder)
-    this.#file = file ?? ''
-    this.#fullPath = path.join(this.#folderPath, this.#file)
     this.multerUpload = multer({
       storage: multer.diskStorage({
         destination: (_req, _file, cb) => {
@@ -21,7 +17,15 @@ export default class Files {
           const uniqueFileName = `${file.originalname}` // Utiliza el nombre proporcionado por el usuario
           cb(null, uniqueFileName)
         }
-      })
+      }),
+      fileFilter: (_req, file, cb) => {
+        // Verificar si el archivo es una imagen
+        if (file.mimetype.startsWith('image/')) {
+          cb(null, true) // Aceptar el archivo
+        } else {
+          cb(null, false) // Rechazar el archivo
+        }
+      }
     })
   }
 
@@ -30,7 +34,6 @@ export default class Files {
       await fs.unlink(path)
       return true
     } catch (error) {
-      console.log(error)
       return false
     }
   }
