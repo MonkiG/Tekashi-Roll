@@ -43,17 +43,17 @@ export class User {
     Utils.parseBasicData(this.phone)
     Utils.parseBasicData(this.role)
 
-    await this.hashPassword()
+    await this.#hashPassword()
     const token = this.#getToken()
     await new UserSchema(this).save()
     return { user: this, token }
   }
 
-  public async hashPassword (): Promise<void> {
+  async #hashPassword (): Promise<void> {
     this.password = await Bcrypt.hashPassword(this.password)
   }
 
-  public async comparePassword (hashedPassword: string): Promise<boolean> {
+  async #comparePassword (hashedPassword: string): Promise<boolean> {
     return await Bcrypt.comparePassword(this.password, hashedPassword)
   }
 
@@ -61,7 +61,7 @@ export class User {
     const bdUser = await UserServices.findByEmail(this.email, 'password email')
 
     if (bdUser !== null) {
-      const isSamePassword = await this.comparePassword(bdUser.password)
+      const isSamePassword = await this.#comparePassword(bdUser.password)
 
       const token = this.#getToken()
       return { logged: isSamePassword, token: isSamePassword ? token : null }
