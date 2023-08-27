@@ -16,7 +16,7 @@ describe('Products Controllers tests', () => {
     await Mongoose.connect()
     const { token } = await new User({
       name: 'Ramón',
-      email: 'some.email@gmail.com',
+      email: 'some.email1@gmail.com',
       password: 'somerandompassword',
       phone: '123 456 78 90',
       role: 'admin'
@@ -42,8 +42,7 @@ describe('Products Controllers tests', () => {
           .field('name', 'Test')
           .field('description', 'Some description about the product')
           .field('price', 144)
-          .field('category', 'Rolls')
-          .field('subcategory', 'Natural')
+          .field('category', '64ea2a2702b6dd2159d84746')
           .attach('image', imagePath)
           .set('Authorization', `Bearer ${userToken}`)
           .set('Content-Type', 'multipart/form-data')
@@ -59,8 +58,7 @@ describe('Products Controllers tests', () => {
           .field('name', 'Test')
           .field('description', 'Some description about the product')
           .field('price', 144)
-          .field('category', 'Rolls')
-          .field('subcategory', 'Natural')
+          .field('category', '64ea2a2702b6dd2159d84746')
           .set('Authorization', `Bearer ${userToken}`)
           .set('Content-Type', 'multipart/form-data')
         expect(response.statusCode).toBe(400)
@@ -74,11 +72,26 @@ describe('Products Controllers tests', () => {
           .set('Authorization', `Bearer ${userToken}`)
           .set('Content-Type', 'multipart/form-data')
         expect(response2.statusCode).toBe(400)
+
+        const pdfPath = path.join(__dirname, 'testPdf.pdf')
+        const response3 = await request(app)
+          .post(`${ProductsRoutes.products}`)
+          .field('description', 'Some description about the product')
+          .field('price', 144)
+          .attach('image', pdfPath)
+          .set('Authorization', `Bearer ${userToken}`)
+          .set('Content-Type', 'multipart/form-data')
+        expect(response3.statusCode).toBe(400)
       })
     })
   })
 
   describe(`GET ${ProductsRoutes.products}`, () => {
+    test('Should respond with status 200', async () => {
+      const response = await request(app)
+        .get(`${ProductsRoutes.products}`)
+      expect(response.statusCode).toBe(200)
+    })
     test('Should respond with an array', async () => {
       const response = await request(app)
         .get(`${ProductsRoutes.products}`)
@@ -89,12 +102,6 @@ describe('Products Controllers tests', () => {
         .get(`${ProductsRoutes.products}`)
       expect(Array.isArray(response2.body)).toBe(true)
     })
-
-    test('Should respond with status 200', async () => {
-      const response = await request(app)
-        .get(`${ProductsRoutes.products}`)
-      expect(Array.isArray(response.body)).toBe(true)
-    })
   })
 
   describe(`GET ${ProductsRoutes.products}${ProductsRoutes.getProduct}`, () => {
@@ -102,7 +109,7 @@ describe('Products Controllers tests', () => {
       const productTest = await new Product({
         name: 'Test product',
         description: 'Some product description',
-        category: 'Rolls',
+        category: '64ea2a2702b6dd2159d84746',
         price: 200,
         imgUrl: '/public/products/testFile.jpg'
       }).saveProduct()
@@ -120,7 +127,7 @@ describe('Products Controllers tests', () => {
       const productTest = await new Product({
         name: 'Test product',
         description: 'Some product description',
-        category: 'Rolls',
+        category: '64ea2a2702b6dd2159d84746',
         price: 200,
         imgUrl: '/public/products/testFile.jpg'
       }).saveProduct()
@@ -147,23 +154,22 @@ describe('Products Controllers tests', () => {
     })
   })
 
-  describe(`PATCH ${ProductsRoutes.products}${ProductsRoutes.editProduct}`, () => {
+  describe(`PATCH ${ProductsRoutes.products}`, () => {
     describe('Correct responses', () => {
       test('Should respond with status 200', async () => {
         const productTest = await new Product({
           name: 'Test product2',
           description: 'Some product description',
-          category: 'Rolls',
+          category: '64ea2a2702b6dd2159d84746',
           price: 200,
           imgUrl: '/public/products/testFile.jpg'
         }).saveProduct()
 
         /* eslint-disable-next-line */
-      const productId = productTest._id.toString()
+        const productId = productTest._id.toString()
         const imagePath = path.join(__dirname, 'testFile2.jpg')
         const response = await request(app)
-          .patch(`${ProductsRoutes.products}${ProductsRoutes.editProduct}`)
-          .field('id', productId)
+          .patch(`${ProductsRoutes.products}/${productId}`)
           .field('description', 'Some description about the product')
           .field('price', 144)
           .attach('image', imagePath)
@@ -172,8 +178,7 @@ describe('Products Controllers tests', () => {
         expect(response.statusCode).toBe(200)
 
         const response2 = await request(app)
-          .patch(`${ProductsRoutes.products}${ProductsRoutes.editProduct}`)
-          .field('id', productId)
+          .patch(`${ProductsRoutes.products}/${productId}`)
           .field('description', 'Some description about the product')
           .field('price', 400)
           .set('Authorization', `Bearer ${userToken}`)
@@ -185,7 +190,7 @@ describe('Products Controllers tests', () => {
         const productTest = await new Product({
           name: 'Test product2',
           description: 'Some product description',
-          category: 'Rolls',
+          category: '64ea2a2702b6dd2159d84746',
           price: 200,
           imgUrl: '/public/products/testFile2.jpg'
         }).saveProduct()
@@ -194,8 +199,7 @@ describe('Products Controllers tests', () => {
       const productId = productTest._id.toString()
         const imagePath = path.join(__dirname, 'testFile3.jpg')
         const response = await request(app)
-          .patch(`${ProductsRoutes.products}${ProductsRoutes.editProduct}`)
-          .field('id', productId)
+          .patch(`${ProductsRoutes.products}/${productId}`)
           .field('description', 'Some description about the product')
           .attach('image', imagePath)
           .set('Authorization', `Bearer ${userToken}`)
@@ -207,25 +211,12 @@ describe('Products Controllers tests', () => {
       test('should respond with status 404', async () => {
         const imagePath = path.join(__dirname, 'testFile3.jpg')
         const response = await request(app)
-          .patch(`${ProductsRoutes.products}${ProductsRoutes.editProduct}`)
-          .field('id', '6140b9c63e5b073da4aef875')
+          .patch(`${ProductsRoutes.products}/6140b9c63e5b073da4aef875`)
           .field('description', 'Some description about the product')
           .attach('image', imagePath)
           .set('Authorization', `Bearer ${userToken}`)
           .set('Content-Type', 'multipart/form-data')
         expect(response.statusCode).toBe(404)
-      })
-
-      test('Should respond with status 400', async () => {
-        const imagePath = path.join(__dirname, 'testFile3.jpg')
-        const response = await request(app)
-          .patch(`${ProductsRoutes.products}${ProductsRoutes.editProduct}`)
-          .field('id', '6140b9c63e5b073da4aef875a')
-          .field('description', 'Some description about the product')
-          .attach('image', imagePath)
-          .set('Authorization', `Bearer ${userToken}`)
-          .set('Content-Type', 'multipart/form-data')
-        expect(response.statusCode).toBe(400)
       })
     })
   })
@@ -235,7 +226,7 @@ describe('Products Controllers tests', () => {
       const productTest = await new Product({
         name: 'Test product2',
         description: 'Some product description',
-        category: 'Rolls',
+        category: '64ea2a2702b6dd2159d84746',
         price: 200,
         imgUrl: '/public/products/testFile2.jpg'
       }).saveProduct()
@@ -268,7 +259,7 @@ describe('Products Controllers tests', () => {
   })
 
   afterAll(async () => {
-    await UserSchema.findOneAndDelete({ email: 'some.email@gmail.com' })
+    await UserSchema.findOneAndDelete({ email: 'some.email1@gmail.com' })
     if (await Files.fileExist('/public/products/testFile3.jpg')) {
       // await Files.deleteFile(Files.joinRoutes(process.cwd(), '/public/products/testFile.jpg'))
       await Files.deleteFile(Files.joinRoutes(process.cwd(), '/public/products/testFile3.jpg'))

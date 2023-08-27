@@ -4,15 +4,22 @@ import app from '../src/app'
 import AuthRoutes from '../src/routes/AuthRoutes'
 import { UserSchema } from '../src/Models/User.model'
 import { Mongoose } from '../src/helpers/Mongoose'
+import { User } from '../src/Models/dto/User.dto'
 
 describe('Auth Controllers tests', () => {
   beforeAll(async () => {
     await Mongoose.connect()
-    await UserSchema.deleteMany({ email: 'raan.heam@gmail.com' })
-    await UserSchema.deleteMany({ email: 'some.email@gmail.com' })
+    await new User({
+      name: 'Ramón Hernández',
+      phone: '322 146 37 29',
+      email: 'raan.heam@gmail.com',
+      password: 'somerandompassword',
+      role: 'admin'
+    }).saveUser()
   })
 
   afterAll(async () => {
+    await UserSchema.deleteMany({})
     await Mongoose.disconnect()
   })
 
@@ -24,8 +31,9 @@ describe('Auth Controllers tests', () => {
           .send({
             name: 'Ramón Hernández',
             phone: '322 146 37 29',
-            email: 'raan.heam@gmail.com',
-            password: 'somerandompassword'
+            email: 'raan.heam5086@gmail.com',
+            password: 'somerandompassword',
+            role: 'admin'
           })
           .set('Content-Type', 'application/json')
 
@@ -42,7 +50,8 @@ describe('Auth Controllers tests', () => {
             name: 'Ramón Hernández',
             phone: '322 146 37 29',
             email: 'raan.heam@gmail.com',
-            password: 'somerandompassword'
+            password: 'somerandompassword',
+            role: 'admin'
           })
           .set('Content-Type', 'application/json')
         expect(response.statusCode).toBe(409)
@@ -55,7 +64,8 @@ describe('Auth Controllers tests', () => {
             name: 'Ramón Hernández',
             phone: '322 146 37 29',
             email: 'raan.heamgmail.com',
-            password: 'somerandompassword'
+            password: 'somerandompassword',
+            role: 'admin'
           })
           .set('Content-Type', 'application/json')
 
@@ -97,7 +107,7 @@ describe('Auth Controllers tests', () => {
         const response = await request(app)
           .post(`${AuthRoutes.auth}${AuthRoutes.login}`)
           .send({
-            email: 'raan.heam@gmail.com',
+            email: 'raan.heam5086@gmail.com',
             password: 'somerandompasswordd'
           })
           .set('Content-Type', 'application/json')
