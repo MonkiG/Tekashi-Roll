@@ -7,8 +7,8 @@ const productSchema = new Schema<Product>({
   name: { type: String, required: true },
   price: { type: Schema.Types.Mixed, required: true },
   description: { type: String, default: 'No description supplied' },
-  category: { type: String, required: true },
-  subcategory: { type: String, default: 'No subcategory supplied' },
+  category: { type: Schema.Types.ObjectId, required: true, ref: 'Category' },
+  subcategory: { type: Schema.Types.ObjectId, ref: 'Subcategory' },
   imgUrl: { type: String, required: true }
 }, {
   timestamps: true

@@ -6,8 +6,8 @@ export interface ProductDto {
   _id: ObjectId
   name: string
   description: string
-  category: string
-  subcategory?: string
+  category: ObjectId
+  subcategory?: ObjectId
   price: string | number
   imgUrl: string
 }
@@ -15,8 +15,8 @@ export interface ProductDto {
 export class Product {
   name: string
   description: string
-  category: string
-  subcategory?: string
+  category: ObjectId
+  subcategory?: ObjectId
   price: string | number
   imgUrl: string
   constructor (product: any) {
@@ -31,7 +31,8 @@ export class Product {
   public async saveProduct (): Promise<ProductDto> {
     Utils.parseBasicData(this.name)
     Utils.parseBasicData(this.description)
-    Utils.parseBasicData(this.category)
+    Utils.parseObjectId(this.category)
+    Utils.parseBasicData(this.imgUrl)
     if (this.subcategory !== undefined) Utils.parseBasicData(this.subcategory)
     if (!Utils.isNumber(this.price)) Utils.parseBasicData(this.price)
 
