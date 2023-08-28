@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose'
 import Utils from '../helpers/Utils'
+import { Mongoose } from '../helpers/Mongoose'
 
 const subcategorySchema = new Schema({
   name: { type: String, required: true },
@@ -10,12 +11,13 @@ const subcategorySchema = new Schema({
   timestamps: true
 })
 
-subcategorySchema.pre('save', function () {
+subcategorySchema.pre('save', function (next) {
   this.name = Utils.parseBasicData(this.name)
   this.description = this.description !== undefined ? Utils.parseBasicData(this.description) : undefined
 
-  // this.categories = this.categories.map((category: string) => {
-  //   return new Types.ObjectId(category)
-  // })
+  Mongoose.isValidObjectIdParser(this.categories)
+  Mongoose.isValidObjectIdParser(this.products)
+
+  next()
 })
 export const Subcategory = model('Subcategory', subcategorySchema)
