@@ -1,6 +1,7 @@
-import mongoose from 'mongoose'
+import mongoose, { isValidObjectId } from 'mongoose'
 import config from '../config'
-import { categorySchema } from '../Models/Category.model'
+import { ParseErrors } from './Errors'
+
 /* eslint-disable-next-line */
 
 export class Mongoose {
@@ -9,11 +10,20 @@ export class Mongoose {
     await mongoose.connect(config.DATABASE_URL, {
       dbName: NODE_ENV === 'test' ? DATABASE_TEST_NAME : DATABASE_NAME
     })
-    // await new categorySchema({
-    //   name: 'test',
-    //   description: 'test'
-    // }).save()
-    mongoose.model('Category', categorySchema)
+  }
+
+  public static isValidObjectIdParser (data: any[] | string): void {
+    if (typeof data === 'string') {
+      if (!isValidObjectId(data)) throw new ParseErrors('Invalid id, should be ObjectId')
+      return
+    }
+
+    if (Array.isArray(data)) {
+      if (data.length <= 0) return
+      data.forEach(id => {
+        if (!isValidObjectId(id)) throw new ParseErrors('Invalid id, should be ObjectId')
+      })
+    }
   }
 
   public static async disconnect (): Promise<void> {
