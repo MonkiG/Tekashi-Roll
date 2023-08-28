@@ -190,7 +190,7 @@ describe('Categories controllers tests', () => {
     describe('Correct responses', () => {
       test('Should respond with status 204', async () => {
         const { _id: id } = await new Category({
-          name: 'Yakimeshi',
+          name: 'Aguas',
           description: 'Some category description',
           subcategories: ['64eaac010bebe0262f599fff'],
           products: ['64ebef307c78b930ec7e61cf']
