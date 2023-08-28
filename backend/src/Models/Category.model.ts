@@ -1,4 +1,6 @@
-import { Schema } from 'mongoose'
+import { Schema, model } from 'mongoose'
+import Utils from '../helpers/Utils'
+import { Mongoose } from '../helpers/Mongoose'
 
 export const categorySchema = new Schema({
   name: { type: String, required: true },
@@ -9,4 +11,12 @@ export const categorySchema = new Schema({
   timestamps: true
 })
 
-// export const CategorySchema = model('Category', categorySchema)
+categorySchema.pre('save', function (next) {
+  Utils.parseBasicData(this.name)
+  Utils.parseBasicData(this.description)
+
+  Mongoose.isValidObjectIdParser(this.subcategories)
+  Mongoose.isValidObjectIdParser(this.products)
+  next()
+})
+export const Category = model('Category', categorySchema)

@@ -43,6 +43,7 @@ describe('Products Controllers tests', () => {
           .field('description', 'Some description about the product')
           .field('price', 144)
           .field('category', '64ea2a2702b6dd2159d84746')
+          .field('subcategory', '64eaac010bebe0262f599fff')
           .attach('image', imagePath)
           .set('Authorization', `Bearer ${userToken}`)
           .set('Content-Type', 'multipart/form-data')
