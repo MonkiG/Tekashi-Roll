@@ -14,6 +14,16 @@ export default class Utils {
     return data
   }
 
+  public static parsePassword (data: any): string {
+    const regex = /^(?=.*\d).{8,}$/
+
+    if (!this.isString(data)) throw new ParseErrors('Wrong data format')
+
+    if (!regex.test(data)) throw new ParseErrors('Invalid password format, should have 8 digits, minimum one number')
+
+    return data
+  }
+
   public static parseEmail (data: any): string {
     if (data === undefined || data === null) {
       throw new ParseErrors('Data don\'t provided')
