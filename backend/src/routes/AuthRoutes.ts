@@ -7,8 +7,11 @@ export default class AuthRoutes {
   public static login = '/login' // GET
   public static signup = '/signup' // POST
   public static auth = '/auth' // POST
+  public static verify = '/verify/:token' // GET
   constructor () {
     this.#router.get('/', AuthControllers.main)
+
+    this.#router.get(AuthRoutes.verify, AuthControllers.verify)
 
     this.#router.post(AuthRoutes.login, AuthMiddlewares.isRegistered, AuthControllers.login)
 
