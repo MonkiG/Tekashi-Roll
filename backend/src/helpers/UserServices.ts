@@ -1,3 +1,4 @@
+import { type Document } from 'mongoose'
 import { type User } from '../Models/dto/User.dto'
 import { UserSchema } from '../Models/User.model'
 // import Jwt from '../helpers/Jwt'
@@ -5,6 +6,10 @@ import { UserSchema } from '../Models/User.model'
 export default class UserServices {
   public static async findByEmail (email: string, dataToReturn: string = '_id email createdAt'): Promise<User | null> {
     return await UserSchema.findOne({ email }, dataToReturn)
+  }
+
+  public static async findByObjectAndUpdate (object: any, dataToUpdate: any): Promise<Document | null> {
+    return await UserSchema.findOneAndUpdate(object, { $set: dataToUpdate }, { new: true })
   }
 
   // public static async logUser ({ email, password }: { email: string, password: string }): Promise<{ logged: boolean, token: string | null }> {

@@ -7,7 +7,8 @@ const userSchema = new Schema<User>({
   email: { type: String, required: true },
   password: { type: String, required: true },
   role: { type: String, required: true, default: 'client' },
-  connected: { type: Boolean, default: false }
+  connected: { type: Boolean, default: false },
+  verified: { type: Boolean, default: false }
 },
 {
   timestamps: true

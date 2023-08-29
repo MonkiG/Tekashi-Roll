@@ -23,11 +23,12 @@ export class User {
   phone?: string = undefined
   email: string
   role?: role
+  verified?: boolean
   readonly connected: boolean = true
   constructor (user?: any) {
     this.name = user.name
     this.email = Utils.parseEmail(user.email)
-    this.password = Utils.parseBasicData(user.password)
+    this.password = Utils.parsePassword(user.password)
     this.phone = user.phone
     this.role = user.role ?? 'client'
   }
@@ -39,7 +40,7 @@ export class User {
   public async saveUser (): Promise<{ user: User, token: string }> {
     Utils.parseBasicData(this.name)
     Utils.parseEmail(this.email)
-    Utils.parseBasicData(this.password)
+    Utils.parsePassword(this.password)
     Utils.parseBasicData(this.phone)
     Utils.parseBasicData(this.role)
 
@@ -59,9 +60,9 @@ export class User {
 
   public async logUser (): Promise<{ logged: boolean, token: string | null }> {
     const bdUser = await UserServices.findByEmail(this.email, 'password email')
-
     if (bdUser !== null) {
-      const isSamePassword = await this.#comparePassword(bdUser.password)
+      const parseredPassword = Utils.parsePassword(bdUser.password)
+      const isSamePassword = await this.#comparePassword(parseredPassword)
 
       const token = this.#getToken()
       return { logged: isSamePassword, token: isSamePassword ? token : null }
