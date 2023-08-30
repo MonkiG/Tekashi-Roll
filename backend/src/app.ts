@@ -14,7 +14,7 @@ const io = new Server(httpServer)
 
 app.use(cors())
 app.use(json())
-app.use('/public', express.static('public'))
+app.use('/static', express.static('static'))
 app.use(AuthRoutes.auth, AuthRoutes.router())
 app.use(SubcategoriesRoutes.subcategories, SubcategoriesRoutes.router())
 app.use(CategoriesRoutes.categories, CategoriesRoutes.router())
