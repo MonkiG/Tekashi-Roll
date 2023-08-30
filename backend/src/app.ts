@@ -4,8 +4,13 @@ import ProductsRoutes from './routes/ProductsRoutes'
 import CategoriesRoutes from './routes/CategoriesRoutes'
 import cors from 'cors'
 import SubcategoriesRoutes from './routes/SubcategoriesRoutes'
+import { createServer } from 'node:http'
+import { Server } from 'socket.io'
+import SocketConnection from './helpers/Socket'
 
 const app = express()
+const httpServer = createServer(app)
+const io = new Server(httpServer)
 
 app.use(cors())
 app.use(json())
@@ -19,4 +24,5 @@ app.get('/', (_req, res) => {
   res.json({ message: 'Hello, world!' })
 })
 
-export default app
+io.on('conneciton', new SocketConnection(io).onConnection)
+export default httpServer

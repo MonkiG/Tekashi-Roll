@@ -31,6 +31,26 @@ _Products PATCH request receive the information by a form-data_
 * **DELETE**
     * "/products" _This route receive the product id in a json body_
 
+### Categories
+* **GET**
+    * "/subcategories"
+    * "/subcategories/:id" _This route should have a valid ObjectId_
+
+_This routes and methods should receive an auth token in the headers and receive the information by a json body_
+
+* **POST**
+
+    * "/subcategories"
+
+* **PATCH**\
+_Need the subcategory id_
+    * "/subcategories"
+
+* **DELETE**\
+_Need the subcategory id_
+    * "/subcategories"
+
+
 ### Subcategories
 * **GET**
     * "/subcategories"
@@ -104,8 +124,6 @@ _This script compiles the code (using the same command as 'build') and runs the 
 * eslint-config-standard-with-typescript
 
 ## To do
-- Email validation
 - Add password validation
 - Fix Multer folders logic
-- Add products categories
-- Add order and cart features (sockets)
+- Add order features (sockets) _El carrito va a generar las ordenes por lo cual solo se tiene que implementar las caracteristicas de gestion de ordenes_

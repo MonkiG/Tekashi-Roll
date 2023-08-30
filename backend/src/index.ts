@@ -1,8 +1,8 @@
-import app from './app'
+import httpServer from './app'
 import config from './config'
 import { Mongoose } from './helpers/Mongoose'
 
-const server = app.listen(config.PORT, async () => {
+const server = httpServer.listen(config.PORT, async () => {
   try {
     await Mongoose.connect()
     console.log(`Server started on port ${config.PORT}`)
