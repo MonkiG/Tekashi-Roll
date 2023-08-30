@@ -18,7 +18,7 @@ describe('Categories controllers tests', () => {
       name: 'Ramón Hernández',
       phone: '322 146 37 29',
       email: 'raan.heam@gmail.com',
-      password: 'somerandompassword',
+      password: 'somerandompassword1',
       role: 'admin'
     }).saveUser()
 

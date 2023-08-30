@@ -14,7 +14,7 @@ export default class FileMiddlewares {
     const isImage = file.mimetype.startsWith('image')
 
     if (isImage) {
-      if (await Files.fileExist(`/public/products/${fileName}`)) {
+      if (await Files.fileExist(`/static/products/${fileName}`)) {
         req.body.fileName = fileName
         next()
         return

@@ -17,7 +17,7 @@ describe('Products Controllers tests', () => {
     const { token } = await new User({
       name: 'Ramón',
       email: 'some.email1@gmail.com',
-      password: 'somerandompassword',
+      password: 'somerandompassword1',
       phone: '123 456 78 90',
       role: 'admin'
     }).saveUser()
@@ -261,9 +261,9 @@ describe('Products Controllers tests', () => {
 
   afterAll(async () => {
     await UserSchema.findOneAndDelete({ email: 'some.email1@gmail.com' })
-    if (await Files.fileExist('/public/products/testFile3.jpg')) {
+    if (await Files.fileExist('/static/products/testFile3.jpg')) {
       // await Files.deleteFile(Files.joinRoutes(process.cwd(), '/public/products/testFile.jpg'))
-      await Files.deleteFile(Files.joinRoutes(process.cwd(), '/public/products/testFile3.jpg'))
+      await Files.deleteFile(Files.joinRoutes(process.cwd(), '/static/products/testFile3.jpg'))
     }
     await ProductServices.deleteAllProducts()
     await Mongoose.disconnect()

@@ -10,7 +10,13 @@ export default class ProductsControllers {
 
     try {
       const product = new Product(data)
-      product.imgUrl = `/public/${imageName}`
+      const protocol = req.protocol
+      /* eslint-disable-next-line */
+      const host = process.env.NODE_ENV !== 'production' ? req.get('host')! : req.get('host')!.replace('api.', '')
+      const route = `${protocol}://${host}/static/${imageName}`
+      product.imgUrl = route
+      console.log(product.imgUrl)
+
       await product.saveProduct()
       res.status(201).json({ message: 'Product created correctly', product })
     } catch (error) {
