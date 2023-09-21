@@ -1,3 +1,5 @@
+import MainButton from './MainButton'
+
 Header.propTypes = {
   isLogged: Boolean,
   userName: String
@@ -8,9 +10,9 @@ export default function Header ({ isLogged = true, userName = 'Ramón Hernández
         <header className="bg-page-black bg-header-image bg-right bg-no-repeat bg-[length:12%] h-[72px]">
             <nav>
                 <ul className="flex w-full justify-around content-center p-3">
-                    <li className={`${isLogged ? 'flex w-32' : 'w-12'} content-center`}>
+                    <li className={`${isLogged ? 'flex w-40' : 'w-12'} content-center`}>
                         <a href="/"><img src="./brand-logo.jpeg" alt="Tekashi-Roll logo" className="rounded-full"/></a>
-                        {isLogged && <span className="px-4">{userName}</span>}
+                        {isLogged && <span className="px-4 text-white">{userName}</span>}
                     </li>
                     <li>
                         <ul className="flex h-full text-white">
@@ -20,10 +22,8 @@ export default function Header ({ isLogged = true, userName = 'Ramón Hernández
                         </ul>
                     </li>
                     {!isLogged
-                      ? <li className="flex content-center text-page-orange  w-1/12 ">
-                            <button className="p-2 w-full text-center bg-page-red hover:bg-page-red-hover rounded-sm">Login</button>
-                        </li>
-                      : <span>carrito</span>}
+                      ? <MainButton content={'Login'} className={'w-1/12 '} />
+                      : <MainButton content={'carrito'}/>}
                 </ul>
 
             </nav>
