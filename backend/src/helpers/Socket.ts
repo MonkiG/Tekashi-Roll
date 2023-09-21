@@ -15,6 +15,7 @@ export default class SocketConnection {
      registerUserHandlers(io, socket);
     */
 
-    socket.on('order:create', OrderControllers.createOrder)
+    socket.on('order:create', (data) => { OrderControllers.createOrder(socket, data) })
+    // socket.on('orders:newOder', (data) => {})
   }
 }

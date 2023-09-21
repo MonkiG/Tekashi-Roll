@@ -10,6 +10,10 @@ export default class ProductServices {
     return parsederProducts as ProductDto[]
   }
 
+  public static async findByIdAndSelect (): Promise<any> {
+
+  }
+
   public static async findById (id: string | ObjectId): Promise<ProductDto | null> {
     const document = await ProductSchema.findOne({ _id: id }).exec()
     if (document !== undefined && document !== null) {
