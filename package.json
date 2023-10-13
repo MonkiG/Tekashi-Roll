@@ -18,5 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "vitest": "0.34.2"
+  },
+  "dependencies": {
+    "react-router-dom": "^6.16.0"
   }
 }

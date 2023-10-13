@@ -1,4 +1,5 @@
 import MainButton from './MainButton'
+import { Link } from 'react-router-dom'
 
 export default function Header ({ isLogged = true, userName = 'Ramón Hernández' }) {
   return (
@@ -6,7 +7,7 @@ export default function Header ({ isLogged = true, userName = 'Ramón Hernández
             <nav>
                 <ul className="flex w-full justify-around content-center p-3">
                     <li className={`${isLogged ? 'flex w-40' : 'w-12'} content-center`}>
-                        <a href="/"><img src="./brand-logo.jpeg" alt="Tekashi-Roll logo" className="rounded-full"/></a>
+                        <Link to="/"><img src="/brand-logo.jpeg" alt="Tekashi-Roll logo" className="rounded-full"/> </Link>
                         {isLogged && <span className="px-4 text-white">{userName}</span>}
                     </li>
                     <li>

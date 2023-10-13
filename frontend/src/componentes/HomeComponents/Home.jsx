@@ -7,7 +7,7 @@ import Footer from '../Footer'
 export default function Home () {
   return (
     <>
-        <Header isLogged={true} userName='Ramón Hernández'/>
+        <Header isLogged={false} userName='Ramón Hernández'/>
         <Hero/>
         <section className='flex justify-around my-10'>
         {
