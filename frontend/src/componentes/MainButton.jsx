@@ -1,7 +1,3 @@
-MainButton.propTypes = {
-  content: String,
-  className: String
-}
 export default function MainButton ({ content, className, ...rest }) {
   return (
         <li className={`flex content-center text-page-orange ${className}`}>

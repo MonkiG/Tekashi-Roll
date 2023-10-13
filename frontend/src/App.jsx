@@ -1,9 +1,9 @@
-import Index from './views'
+import Home from './componentes/HomeComponents/Home'
 
 function App () {
   return (
     <>
-      <Index/>
+      <Home/>
     </>
   )
 }

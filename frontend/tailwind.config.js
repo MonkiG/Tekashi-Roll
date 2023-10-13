@@ -16,7 +16,8 @@ export default {
         'page-gray': '#8A8A8A'
       },
       backgroundImage: {
-        'header-image': 'url(./header-image.png)'
+        'header-image': 'url(./header-image.png)',
+        'hero-wallpaper': 'url("public/MainWallpaper.png")'
       }
     }
   },

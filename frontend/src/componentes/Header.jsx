@@ -1,10 +1,5 @@
 import MainButton from './MainButton'
 
-Header.propTypes = {
-  isLogged: Boolean,
-  userName: String
-}
-
 export default function Header ({ isLogged = true, userName = 'Ramón Hernández' }) {
   return (
         <header className="bg-page-black bg-header-image bg-right bg-no-repeat bg-[length:12%] h-[72px]">
