@@ -11,7 +11,8 @@
     "test:back": "npm run test --prefix backend",
     "test:front": "npm run test --prefix frontend",
     "dev:back": "npm run dev --prefix backend",
-    "dev:front": "npm run dev --prefix frontend"
+    "dev:front": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run dev:back\" \"npm run dev:front\""
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "vitest": "0.34.2"
   },
   "dependencies": {
+    "concurrently": "^8.2.1",
     "react-router-dom": "^6.16.0"
   }
 }
