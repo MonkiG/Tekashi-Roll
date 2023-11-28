@@ -14,7 +14,9 @@ export async function signup (data) {
     }
   })
   const token = response.data.token
+  const userData = response.data.data
   window.localStorage.setItem('token', token)
+  return { token, userData }
 }
 
 export async function login (data) {
@@ -27,5 +29,7 @@ export async function login (data) {
     }
   })
   const token = response.data.token
+  const userData = response.data.data
   window.localStorage.setItem('token', token)
+  return { token, userData }
 }

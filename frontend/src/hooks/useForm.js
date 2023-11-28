@@ -22,10 +22,16 @@ export default function useForm (initialState) {
     const formValues = Object.values(data)
     const emptyValue = formValues.find(value => value === '')
 
-    setShowWarn(emptyValue === '')
-    return !(emptyValue === '')
+    console.log(data.password)
+    setShowWarn((emptyValue === '' && validateRegex(data.password)))
+    return !((emptyValue === '' && validateRegex(data.password)))
   }
 
+  const validateRegex = (data) => {
+    const regex = /^(?=.*\d).{8,}$/
+
+    return regex.test(data)
+  }
   return ({
     formHandleChange,
     data,

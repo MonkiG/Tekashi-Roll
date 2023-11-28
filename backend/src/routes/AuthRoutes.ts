@@ -4,7 +4,7 @@ import AuthMiddlewares from '../middlewares/Auth.middleware'
 
 export default class AuthRoutes {
   #router = Router()
-  public static login = '/login' // GET
+  public static login = '/login' // POST
   public static signup = '/signup' // POST
   public static auth = '/auth' // POST
   public static verify = '/verify/:token' // GET

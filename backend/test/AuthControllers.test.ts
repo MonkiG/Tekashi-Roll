@@ -6,7 +6,7 @@ import { UserSchema } from '../src/Models/User.model'
 import { Mongoose } from '../src/helpers/Mongoose'
 import { User } from '../src/Models/dto/User.dto'
 
-describe.skip('Auth Controllers tests', () => {
+describe('Auth Controllers tests', () => {
   beforeAll(async () => {
     await Mongoose.connect()
     await new User({

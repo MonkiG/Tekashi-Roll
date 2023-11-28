@@ -3,11 +3,11 @@ import UserServices from '../helpers/UserServices'
 import StatusMessages from '../helpers/StatusMessages'
 import Jwt from '../helpers/Jwt'
 import { isValidObjectId } from 'mongoose'
+import ResponseDto from '../Models/dto/ResponseDto'
 
 export default class AuthMiddlewares {
   public static async isRegistered (req: Request, res: Response, next: NextFunction): Promise<void> {
     const { email } = req.body
-
     try {
       const user = await UserServices.findByEmail(email)
       if (req.path === '/signup') {
@@ -15,7 +15,9 @@ export default class AuthMiddlewares {
           next()
           return
         }
-        res.status(409).json({ message: StatusMessages.STATUS_409, user })
+
+        const response = new ResponseDto({ message: StatusMessages.STATUS_409, data: user })
+        res.status(409).json(response)
         return
       }
 
@@ -24,10 +26,13 @@ export default class AuthMiddlewares {
           next()
           return
         }
-        res.status(404).json({ message: `${StatusMessages.STATUS_404}, user is not registered` })
+
+        const response = new ResponseDto({ message: `${StatusMessages.STATUS_404}, user is not registered` })
+        res.status(404).json(response)
       }
     } catch (error) {
-      res.status(500).json({ message: StatusMessages.STATUS_500 })
+      const response = new ResponseDto({ message: StatusMessages.STATUS_500 })
+      res.status(500).json(response)
     }
   }
 
@@ -35,6 +40,7 @@ export default class AuthMiddlewares {
     const token = req.headers.authorization
 
     const email = Jwt.checkTokenAndExtractEmail(token)
+
     try {
       const user = await UserServices.findByEmail(email, 'role')
       if (user !== null) {
@@ -44,13 +50,16 @@ export default class AuthMiddlewares {
         }
 
         if (user.role === 'client') {
-          res.status(401).json({ message: `${StatusMessages.STATUS_401}, user doesn't have authorization, should be "Admin" but it's ${user.role}` })
+          const response = new ResponseDto({ message: `${StatusMessages.STATUS_401}, user doesn't have authorization, should be "Admin" but it's ${user.role}` })
+          res.status(401).json(response)
           return
         }
       }
-      res.status(404).json({ message: `${StatusMessages.STATUS_404}, User not found` })
+      const response = new ResponseDto({ message: `${StatusMessages.STATUS_404}, User not found` })
+      res.status(404).json(response)
     } catch (error) {
-      res.status(500).json({ message: StatusMessages.STATUS_500 })
+      const response = new ResponseDto({ message: StatusMessages.STATUS_500 })
+      res.status(500).json(response)
     }
   }
 
@@ -63,13 +72,15 @@ export default class AuthMiddlewares {
       return
     }
 
-    res.status(400).json({ message: `${StatusMessages.STATUS_400}, Should be a valid ObjectId` })
+    const response = new ResponseDto({ message: `${StatusMessages.STATUS_400}, Should be a valid ObjectId` })
+    res.status(400).json(response)
   }
 
   public static isValidToken (req: Request, res: Response, next: NextFunction): void {
     const token = req.headers.authorization
     if (token === undefined) {
-      res.status(400).json({ message: `${StatusMessages.STATUS_400}, Token undefined` })
+      const response = new ResponseDto({ message: `${StatusMessages.STATUS_400}, Token undefined` })
+      res.status(400).json(response)
       return
     }
 
@@ -81,6 +92,7 @@ export default class AuthMiddlewares {
       return
     }
 
-    res.status(400).json({ message: `${StatusMessages.STATUS_400}, 'Invalid token format. Use Bearer scheme.` })
+    const response = new ResponseDto({ message: `${StatusMessages.STATUS_400}, 'Invalid token format. Use Bearer scheme.` })
+    res.status(400).json(response)
   }
 }

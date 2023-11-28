@@ -1,5 +1,6 @@
 import config from './../config'
 import jwt from 'jsonwebtoken'
+import UserServices from './UserServices'
 
 export default class Jwt {
   #email: string
@@ -25,18 +26,29 @@ export default class Jwt {
     }
   }
 
-  public sign (): string {
-    const payload = this.#payload()
-    const token = jwt.sign(payload, config.JWT_SECRET)
-
-    return token
+  public async sign (): Promise<string> {
+    try {
+      const payload = await this.#payload()
+      const token = jwt.sign(payload, config.JWT_SECRET)
+      return token
+    } catch (e) {
+      throw new Error('Error en la firma')
+    }
   }
 
-  #payload (): object {
+  async #payload (): Promise<object> {
+    console.log(this.#email)
+
+    const request = await UserServices.findByEmail(this.#email, 'role name')
+    console.log(request)
+
+    if (request === null) throw new Error('User dont found')
     const payload = {
       exp: Math.floor(Date.now() / 1000) + (60 * 60 * 7 * 31),
       sub: 'Auth token',
-      email: this.#email
+      email: this.#email,
+      rol: request.role,
+      name: request.name
     }
     return payload
   }

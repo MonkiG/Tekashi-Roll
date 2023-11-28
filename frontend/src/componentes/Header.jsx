@@ -9,7 +9,7 @@ export default function Header ({ isLogged, userName }) {
                 <ul className="flex w-full justify-around items-center content-center p-3 h-[72px]">
                     <li className={`${isLogged ? 'flex' : 'w-12'} content-center items-center`}>
                         <Link to="/"><img src="/brand-logo.jpeg" alt="Tekashi-Roll logo" className="rounded-full w-[51.44px] h-[51.44px]"/> </Link>
-                        {isLogged && <span className="px-4 text-white">{userName}</span>}
+                        {(isLogged && userName !== '') && <span className="px-4 text-white">{userName}</span>}
                     </li>
                     <li>
                         <ul className="flex h-full text-white">

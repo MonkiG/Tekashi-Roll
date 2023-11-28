@@ -6,11 +6,11 @@ import Footer from '../Footer'
 import { useAuthProvider } from '../../contexts/AuthProvider'
 
 export default function Home () {
-  const { userToken } = useAuthProvider()
-  console.log(userToken)
+  const { userToken, userData } = useAuthProvider()
+  console.log(userData)
   return (
     <>
-        <Header isLogged={Boolean(userToken)} userName={'Ramon Hernandez'}/>
+        <Header isLogged={Boolean(userToken)} userName={userData.name}/>
         <Hero/>
         <section className='flex justify-around my-10'>
         {

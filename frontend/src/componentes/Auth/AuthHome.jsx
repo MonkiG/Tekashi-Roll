@@ -1,12 +1,15 @@
 import HeaderAuth from './HeaderAuth'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useForm from '../../hooks/useForm'
 import { login, signup } from '../../services/Auth.services'
 import useLoader from '../../hooks/useLoader'
+import { useAuthProvider } from '../../contexts/AuthProvider'
 
 export default function AuthHome ({ typeForm, initialFormData }) {
   const { isLoading, activeLoading, deactivateLoading } = useLoader()
   const { formHandleChange, data, showWarn, validateForm, resetForm } = useForm(initialFormData)
+  const { handleUserData } = useAuthProvider()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -16,13 +19,24 @@ export default function AuthHome ({ typeForm, initialFormData }) {
 
     activeLoading()
     try {
-      if (typeForm === 'register') await signup(data)
-      if (typeForm === 'login') await login(data)
+      if (typeForm === 'register') {
+        const { userData } = await signup(data)
+        handleUserData(userData)
+      }
+      if (typeForm === 'login') {
+        const { userData } = await login(data)
+        handleUserData(userData)
+      }
     } catch (e) {
-      console.log(e)
+      const status = e.response.status
+      if (status === 401) alert('Contaseña equivocada')
+      if (status === 404) alert('Usuario no registrado')
+      if (status === 409) alert('El usuario ya se encuentra registrado')
+      if (status === 500) alert('Error en el servidor, intentelo mas tarde')
     } finally {
       deactivateLoading()
     }
+    navigate('/')
     resetForm()
   }
 

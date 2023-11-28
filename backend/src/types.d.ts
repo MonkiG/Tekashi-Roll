@@ -2,7 +2,7 @@ import { type ObjectId } from 'mongoose'
 
 export type role = 'admin' | 'client'
 export interface OrderDetail {
-  readonly orderI: string | ObjectId
+  readonly orderId: string | ObjectId
 }
 export interface Address {
   street: string

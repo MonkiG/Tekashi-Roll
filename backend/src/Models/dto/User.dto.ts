@@ -33,11 +33,12 @@ export class User {
     this.role = user.role ?? 'client'
   }
 
-  #getToken (): string {
-    return new Jwt(this.email).sign()
+  async #getToken (): Promise<string> {
+    const token = await new Jwt(this.email).sign()
+    return token
   }
 
-  public async saveUser (): Promise<{ user: User, token: string }> {
+  public async saveUser (): Promise<{ user: User, token: string, data: { rol: string, name: string } }> {
     Utils.parseBasicData(this.name)
     Utils.parseEmail(this.email)
     Utils.parsePassword(this.password)
@@ -45,9 +46,11 @@ export class User {
     Utils.parseBasicData(this.role)
 
     await this.#hashPassword()
-    const token = this.#getToken()
+
     await new UserSchema(this).save()
-    return { user: this, token }
+    const token = await this.#getToken()
+    /* eslint-disable-next-line */
+    return { user: this, token, data:{rol: this.role!, name: this.name!} }
   }
 
   async #hashPassword (): Promise<void> {
@@ -58,16 +61,18 @@ export class User {
     return await Bcrypt.comparePassword(this.password, hashedPassword)
   }
 
-  public async logUser (): Promise<{ logged: boolean, token: string | null }> {
-    const bdUser = await UserServices.findByEmail(this.email, 'password email')
+  public async logUser (): Promise<{ logged: boolean, token: string | null, data: { rol: string, name: string } | null }> {
+    const bdUser = await UserServices.findByEmail(this.email, 'password email role name')
+
     if (bdUser !== null) {
       const parseredPassword = Utils.parsePassword(bdUser.password)
       const isSamePassword = await this.#comparePassword(parseredPassword)
 
-      const token = this.#getToken()
-      return { logged: isSamePassword, token: isSamePassword ? token : null }
+      const token = await this.#getToken()
+      /* eslint-disable-next-line */
+      return { logged: isSamePassword, token: isSamePassword ? token : null, data: { rol: bdUser.role!, name: bdUser.name! } }
     }
 
-    return { logged: false, token: null }
+    return { logged: false, token: null, data: null }
   }
 }
