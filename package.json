@@ -1,0 +1,14 @@
+{
+    "name": "tekashi-roll",
+    "version": "1.0.0",
+    "description": "",
+    "workspaces": [
+        "tekashi-web-app"
+    ],
+    "scripts": {
+      "dev:web": "npm run dev --prefix tekashi-web-app"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+  }
