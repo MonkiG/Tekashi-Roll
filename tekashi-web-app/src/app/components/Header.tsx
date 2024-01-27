@@ -3,7 +3,7 @@ import Image from 'next/image'
 import MainButton from './MainButton'
 import Link from 'next/link'
 
-type HeaderTypes = "Main" | "Auth"
+import type { HeaderTypes } from '../types'
 
 interface MainHeaderProps {
     isLogged: boolean,
@@ -35,9 +35,9 @@ const MainHeader = ({ isLogged, userName, className }: MainHeaderProps) => {
                     </li>
                     <li>
                         <ul className="flex h-full text-white">
-                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><button className="p-2">Inicio</button></li>
-                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><button className="p-2">Servicios</button></li>
-                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><button className="p-2">Nosotros</button></li>
+                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={"/"}>Inicio</Link></li>
+                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={"/menu"}>Menu</Link></li>
+                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={"/about-us"}>Nosotros</Link></li>
                         </ul>
                     </li>
                     {!isLogged

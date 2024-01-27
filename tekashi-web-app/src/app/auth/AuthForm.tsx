@@ -3,16 +3,16 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import type { SignUpUserData } from "@/services/AuthServices"
 
-interface FormData {
-    [key:string]: string
-}
 export default function AuthForm({
-    data
+    data,
+    handleAuth
 }: {
-    data: FormData
+    data: SignUpUserData | {[key: string]: string},
+    handleAuth: (sigUpUserData: any) => Promise<void>
 }){
-    const [formData, setFormData] = useState<FormData>(data)
+    const [formData, setFormData] = useState<SignUpUserData | {[key: string]: string}>(data)
     const path = usePathname().split("/")[2]
    
     const inputTypes: Record<string, string> = {
@@ -37,9 +37,9 @@ export default function AuthForm({
         }))
     }
     
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log("Form submit")
+        await handleAuth(formData)
     }
 
     return (
