@@ -1,8 +1,7 @@
-import HeroLocation from "./HeroLocation";
+import HeroLocation from './HeroLocation'
 
-
-export default function Hero(){
-    return ( 
+export default function Hero (): JSX.Element {
+  return (
         <section className='bg-hero-wallpaper bg-cover h-[41rem] relative'>
             <div className='absolute flex flex-col items-center justify-center p-3 w-1/2 h-3/4'>
                 <span className='text-5xl text-white text-center p-5'>
@@ -13,5 +12,5 @@ export default function Hero(){
                 <HeroLocation />
             </div>
         </section>
-    )
+  )
 }

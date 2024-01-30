@@ -1,19 +1,20 @@
-import AuthForm from "../AuthForm"
-import signUpUser from "@/services/AuthServices"
-export default function Signup(){
-    return (
+import AuthForm from '../AuthForm'
+import signUpUser from '@/services/AuthServices'
+
+export default function Signup (): JSX.Element {
+  return (
         <>
             <h2 className="uppercase text-2xl m-5 font-bold">Registro</h2>
-            <AuthForm 
+            <AuthForm
                 data={{
-                    mail: "",
-                    password: "",
-                    name: "",
-                    lastName: "",
-                    phone: ""
-                }} 
+                  mail: '',
+                  password: '',
+                  name: '',
+                  lastName: '',
+                  phone: ''
+                }}
                 handleAuth={signUpUser}
             />
         </>
-    )
+  )
 }

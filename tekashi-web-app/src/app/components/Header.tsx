@@ -6,25 +6,24 @@ import Link from 'next/link'
 import type { HeaderTypes } from '../types'
 
 interface MainHeaderProps {
-    isLogged: boolean,
-    userName?: string
-    className?: string
+  isLogged: boolean
+  userName?: string
+  className?: string
+}
+export default function Header ({ headerType, mainHeaderProps, className }: { headerType: HeaderTypes, mainHeaderProps?: MainHeaderProps, className?: string }): JSX.Element {
+  /* eslint-disable-next-line */
+  return (headerType === 'Main' ? <MainHeader isLogged={mainHeaderProps!.isLogged} className={mainHeaderProps!.className} userName={mainHeaderProps!.userName}/> : <AuthHeader className={className}/>)
 }
 
-export default function Header({ headerType, mainHeaderProps, className }:{ headerType: HeaderTypes, mainHeaderProps?: MainHeaderProps, className?: string }){
-
-    return (headerType === "Main" ? <MainHeader isLogged={mainHeaderProps!.isLogged} className={mainHeaderProps!.className} userName={mainHeaderProps!.userName}/> : <AuthHeader className={className}/>)
-}
-
-const AuthHeader = ({className}: {className?: string}) => {
-    return ( 
+const AuthHeader = ({ className }: { className?: string }): JSX.Element => {
+  return (
         <header className={`fixed w-full bg-page-black bg-header-image bg-right bg-no-repeat bg-[length:12%] h-[72px] flex items-center ${className}`}>
             <Image src="/brand-logo.jpeg" alt="Tekashi roll logo" className='rounded-full mx-5' width={51} height={51} />
             <h1 className='text-white text-xl uppercase'><Link href="/">Tekashi Roll</Link></h1>
         </header>
-    )
+  )
 }
-const MainHeader = ({ isLogged, userName, className }: MainHeaderProps) => {
+const MainHeader = ({ isLogged, userName, className }: MainHeaderProps): JSX.Element => {
   return (
         <header className={`bg-page-black bg-header-image bg-right bg-no-repeat bg-[length:12%] h-[72px] ${className}`}>
             <nav>
@@ -35,9 +34,9 @@ const MainHeader = ({ isLogged, userName, className }: MainHeaderProps) => {
                     </li>
                     <li>
                         <ul className="flex h-full text-white">
-                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={"/"}>Inicio</Link></li>
-                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={"/menu"}>Menu</Link></li>
-                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={"/about-us"}>Nosotros</Link></li>
+                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={'/'}>Inicio</Link></li>
+                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={'/menu'}>Menu</Link></li>
+                            <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={'/about-us'}>Nosotros</Link></li>
                         </ul>
                     </li>
                     {!isLogged
@@ -49,4 +48,3 @@ const MainHeader = ({ isLogged, userName, className }: MainHeaderProps) => {
         </header>
   )
 }
-

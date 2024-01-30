@@ -1,10 +1,10 @@
-export type HeaderTypes = "Main" | "Auth"
+export type HeaderTypes = 'Main' | 'Auth'
 
 export interface BaseProps {
-    className?: string
+  className?: string
 }
 export interface HeaderProps extends BaseProps {
-    isLogged: boolean,
-    userName?: string
-    headerType: HeaderTypes
+  isLogged: boolean
+  userName?: string
+  headerType: HeaderTypes
 }
