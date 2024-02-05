@@ -3,30 +3,22 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import type { SignUpUserData } from '@/services/AuthServices'
+import { inputTypes, placeholders } from '@/helpers/FormHelpers'
+import { type AuthType, type UserLoginWithPasswordData, type UserSignUp } from '../types'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import authHandlers from './authHandlers'
 
+/** TODO
+ * Redireccionar al home o mostrar modal dependiendo el caso
+ */
 export default function AuthForm ({
-  data,
-  handleAuth
+  data
 }: {
-  data: SignUpUserData | Record<string, string>
-  handleAuth: (sigUpUserData: any) => Promise<void>
+  data: UserLoginWithPasswordData | UserSignUp
 }): JSX.Element {
-  const [formData, setFormData] = useState<SignUpUserData | Record<string, string>>(data)
-  const path = usePathname().split('/')[2]
-
-  const inputTypes: Record<string, string> = {
-    password: 'password',
-    phone: 'tel'
-  }
-
-  const placeholders: Record<string, string> = {
-    mail: 'Correo',
-    password: 'Contraseña',
-    name: 'Nombre',
-    lastName: 'Apellidos(s)',
-    phone: 'Telefono'
-  }
+  const [formData, setFormData] = useState<UserLoginWithPasswordData | UserSignUp>(data)
+  const path = usePathname().split('/')[2] as AuthType
+  const supabase = createClientComponentClient()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const inputName = e.target.name
@@ -39,7 +31,7 @@ export default function AuthForm ({
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
-    await handleAuth(formData)
+    await authHandlers(path, formData, supabase)
   }
 
   return (
@@ -51,7 +43,7 @@ export default function AuthForm ({
                         name={input}
                         type={inputTypes[input] ?? 'text'}
                         placeholder={placeholders[input]}
-                        value={formData[input]}
+                        value={formData[input as keyof typeof data]}
                         onChange={handleChange}
                         className='p-2 border-gray-200 border-2 my-2 w-72 rounded-sm'
                     />

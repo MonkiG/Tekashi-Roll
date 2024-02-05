@@ -1,19 +1,17 @@
 import AuthForm from '../AuthForm'
-import signUpUser from '@/services/AuthServices'
 
-export default function Signup (): JSX.Element {
+export default async function Signup (): Promise<JSX.Element> {
   return (
         <>
             <h2 className="uppercase text-2xl m-5 font-bold">Registro</h2>
             <AuthForm
                 data={{
-                  mail: '',
+                  email: '',
                   password: '',
                   name: '',
                   lastName: '',
                   phone: ''
                 }}
-                handleAuth={signUpUser}
             />
         </>
   )
