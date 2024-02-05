@@ -26,7 +26,7 @@ export default function useGetUserLocation (): { parseredPosition: HeroPosition,
   useEffect(() => {
     const localStorageUserAddress = window.localStorage.getItem('address')
 
-    if (localStorageUserAddress === null) {
+    if (localStorageUserAddress === null || localStorageUserAddress === undefined) {
       navigator.geolocation.getCurrentPosition(async (pos) => {
         const { latitude, longitude } = pos.coords
         fullUserAddressRef.current = await getLocationByCoords(latitude, longitude)
