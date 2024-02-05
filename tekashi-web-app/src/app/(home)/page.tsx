@@ -16,7 +16,7 @@ export default async function Page (): Promise<JSX.Element> {
 
   return (
     <>
-      <Header userData={userData && { userName: `${userData.name} ${userData.lastName}`, userId: session?.user.id }}/>
+      <Header path='/' userData={userData && { userName: `${userData.name} ${userData.lastName}`, userId: session?.user.id }}/>
       <Hero isLogged={Boolean(userData)}/>
       <section className="flex justify-around my-10">
         {

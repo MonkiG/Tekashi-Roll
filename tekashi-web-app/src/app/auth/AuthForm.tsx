@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { inputTypes, placeholders } from '@/helpers/FormHelpers'
 import { type AuthType, type UserLoginWithPasswordData, type UserSignUp } from '../types'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -19,6 +19,7 @@ export default function AuthForm ({
   const [formData, setFormData] = useState<UserLoginWithPasswordData | UserSignUp>(data)
   const path = usePathname().split('/')[2] as AuthType
   const supabase = createClientComponentClient()
+  const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const inputName = e.target.name
@@ -31,7 +32,10 @@ export default function AuthForm ({
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
-    await authHandlers(path, formData, supabase)
+    const authResult = await authHandlers(path, formData, supabase)
+    if (path === 'login' && (authResult && 'userId' in authResult)) {
+      router.push(`/user/${authResult.userId}`)
+    }
   }
 
   return (

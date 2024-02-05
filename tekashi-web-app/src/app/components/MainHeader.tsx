@@ -5,7 +5,7 @@ import MainButton from './MainButton'
 import UserCart from './UserCart'
 import UserNotify from './UserNotify'
 
-export default function MainHeader ({ userData, className }: { userData: MainHeaderProps, className?: string }): JSX.Element {
+export default function MainHeader ({ userData, className }: { userData?: MainHeaderProps, className?: string }): JSX.Element {
   return (
         <header className={`relative bg-page-black bg-header-image bg-right bg-no-repeat bg-[length:12%] h-[72px] ${className}`}>
             <nav>
@@ -21,7 +21,7 @@ export default function MainHeader ({ userData, className }: { userData: MainHea
                             <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={'/about-us'}>Nosotros</Link></li>
                         </ul>
                     </li>
-                    {!userData
+                    {userData === undefined
                       ? <MainButton content={'Login'} className={'w-1/12 '} />
                       : (
                           <li className='flex justify-center items-center'>
