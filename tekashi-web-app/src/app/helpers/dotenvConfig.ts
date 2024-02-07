@@ -1,4 +1,4 @@
-const config = {
+const dotenvConfig = {
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
   DATABASE_CONNECTION_STRING: process.env.DATABASE_CONNECTION_STRING,
   GEO_API_TOKEN: process.env.NEXT_PUBLIC_GEO_API_TOKEN,
@@ -6,4 +6,4 @@ const config = {
   SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 }
 
-export default config
+export default dotenvConfig

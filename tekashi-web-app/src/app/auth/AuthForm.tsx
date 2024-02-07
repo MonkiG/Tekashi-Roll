@@ -1,12 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { inputTypes, placeholders } from '@/app/helpers/FormHelpers'
 import { type AuthType, type UserLoginWithPasswordData, type UserSignUp } from '@/app/types'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import authHandlers from '@/app/services/authHandlers'
+import useAuthForm from '@/app/hooks/useAuthForm'
 
 /** TODO
  * Redireccionar al home o mostrar modal dependiendo el caso
@@ -16,27 +14,8 @@ export default function AuthForm ({
 }: {
   data: UserLoginWithPasswordData | UserSignUp
 }): JSX.Element {
-  const [formData, setFormData] = useState<UserLoginWithPasswordData | UserSignUp>(data)
   const path = usePathname().split('/')[2] as AuthType
-  const supabase = createClientComponentClient()
-  const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const inputName = e.target.name
-    const inputValue = e.target.value
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [inputName]: inputValue
-    }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault()
-    const authResult = await authHandlers(path, formData, supabase)
-    if (path === 'login' && (authResult && 'userId' in authResult)) {
-      router.push(`/user/${authResult.userId}`)
-    }
-  }
+  const { handleChange, handleSubmit, formData } = useAuthForm(data, path)
 
   return (
         <form className="flex flex-col" onSubmit={handleSubmit}>
