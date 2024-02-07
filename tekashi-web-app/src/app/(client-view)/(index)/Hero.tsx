@@ -1,13 +1,9 @@
 import Link from 'next/link'
 import HeroLocation from './HeroLocation'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getAuthSession } from '@/app/services/authServices'
 
 export default async function Hero (): Promise<JSX.Element> {
-  const supabase = createServerComponentClient({ cookies })
-  const {
-    data: { session }
-  } = await supabase.auth.getSession()
+  const session = await getAuthSession()
 
   return (
         <section className='bg-hero-wallpaper bg-cover h-[41rem] relative'>
