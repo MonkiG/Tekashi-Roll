@@ -9,14 +9,16 @@ export const metadata: Metadata = {
   description: "Tekashi Roll, Sushi's restaurant app"
 }
 
-export default function RootLayout ({
+export default async function RootLayout ({
   children
 }: Readonly<{
   children: React.ReactNode
-}>): JSX.Element {
+}>): Promise<JSX.Element> {
   return (
     <html lang="es-mx">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+      </body>
     </html>
   )
 }

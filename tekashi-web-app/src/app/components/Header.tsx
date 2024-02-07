@@ -8,7 +8,8 @@ export default function Header ({ userData, className, path }: { userData?: Main
     ? <AuthHeader className={className}/>
     : <MainHeader
     className={className}
-    userData={userData}/>)
+    userData={userData}/>
+  )
 }
 
 const AuthHeader = ({ className }: { className?: string }): JSX.Element => {

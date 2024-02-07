@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { inputTypes, placeholders } from '@/helpers/FormHelpers'
-import { type AuthType, type UserLoginWithPasswordData, type UserSignUp } from '../types'
+import { inputTypes, placeholders } from '@/app/helpers/FormHelpers'
+import { type AuthType, type UserLoginWithPasswordData, type UserSignUp } from '@/app/types'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import authHandlers from './authHandlers'
+import authHandlers from '@/app/services/authHandlers'
 
 /** TODO
  * Redireccionar al home o mostrar modal dependiendo el caso

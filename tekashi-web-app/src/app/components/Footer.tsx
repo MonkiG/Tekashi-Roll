@@ -1,7 +1,6 @@
 import Image from 'next/image'
-import type { BaseProps } from '../types'
 
-export default function Footer ({ className }: BaseProps): JSX.Element {
+export default function Footer ({ className }: { className?: string }): JSX.Element {
   return (
       <footer className={`flex items-center justify-around p-16 ${className}`}>
           <Image src="/brand-logo.jpeg" alt="tekashi roll logo" className="w-1/12 rounded-full" width={51} height={51} />

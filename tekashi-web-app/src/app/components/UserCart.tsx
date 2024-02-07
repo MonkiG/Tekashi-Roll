@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 export default function UserCart ({ userId }: { userId: string }): JSX.Element {
   const [showCart, setShowCart] = useState(false)
-  console.log(userId)
+
   return (
    <>
     <button
@@ -30,7 +30,8 @@ export default function UserCart ({ userId }: { userId: string }): JSX.Element {
                 {Array.from({ length: 10 }, (_, i) => <CartProduct
                                                         handleDeleteProduct={() => { console.log(`producto ${i} eliminado`) }}
                                                         key={i}
-                                                        numberOfProduct={i}/>
+                                                        numberOfProduct={i}
+                                                      />
                 )}
             </ul>
             <footer className='text-sm'>

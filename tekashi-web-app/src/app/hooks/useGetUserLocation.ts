@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { getLocationByCoords } from '@/helpers/getLocationByCoords'
+import { getLocationByCoords } from '@/app/helpers/getLocationByCoords'
 
 interface UserAddress {
   country: string

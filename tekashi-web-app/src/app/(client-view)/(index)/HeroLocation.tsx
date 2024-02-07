@@ -1,7 +1,7 @@
 'use client'
 
-import LocationIcon from '../components/icons/Location'
-import useGetUserLocation from '../hooks/useGetUserLocation'
+import LocationIcon from '@/app/components/icons/Location'
+import useGetUserLocation from '@/app/hooks/useGetUserLocation'
 
 export default function HeroLocation (): JSX.Element {
   const { parseredPosition } = useGetUserLocation()
