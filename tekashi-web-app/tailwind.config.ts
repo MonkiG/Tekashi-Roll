@@ -14,7 +14,7 @@ const config: Config = {
         'page-red': '#CC1717',
         'page-red-hover': '#DD2727',
         'page-orange': '#FFB900',
-        'page-orange-hover': '#FFA00',
+        'page-orange-hover': '#FFA000',
         'page-gray': '#8A8A8A'
       },
       backgroundImage: {

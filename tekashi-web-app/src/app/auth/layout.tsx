@@ -1,7 +1,14 @@
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
-export default function AuthLayout ({ children }: { children: React.ReactNode }): JSX.Element {
+import { getUserBySession } from '../services/authServices'
+import { redirect } from 'next/navigation'
+
+export default async function AuthLayout ({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
   /** Agregar OAuth al login y signup */
+
+  const user = await getUserBySession()
+  if (user) redirect(`/user/${user.id}`)
+
   return (
         <section className="flex flex-col justify-between h-screen">
             <Header path='/auth' className="relative"/>

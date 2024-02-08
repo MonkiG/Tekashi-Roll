@@ -2,32 +2,23 @@ import AdminHeader from './AdminHeader'
 
 import { redirect } from 'next/navigation'
 import { AppRoles } from '../helpers/AppRoles'
-import { getServerComponentClient } from '../helpers/supabaseHelpers'
-import { type UUID } from 'crypto'
+import { getUserRoleBySession } from '../services/userServices'
 
-interface RoleData {
-  role_id: UUID
-  roles: {
-    role_name: string
-  }
-}
+export default async function AdminLayout ({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
+  const userRole = await getUserRoleBySession()
 
-export default async function AdminLayout ({ children }: { children: React.ReactDOM }): Promise<JSX.Element> {
-  const supabase = getServerComponentClient()
+  if (!userRole) redirect('/auth/login')
 
-  const {
-    data
-  } = await supabase.from('users').select('role_id, roles(role_name)').single<RoleData>()
-
-  if (!data) redirect('/auth/login')
-
-  if (data.roles.role_name !== AppRoles.app_admin) {
+  if (userRole !== AppRoles.app_admin) {
     redirect('/')
   }
+
   return (
         <>
-            <AdminHeader />
-                {children}
+          <AdminHeader />
+          <main className="h-full my-10 mx-14">
+            {children}
+          </main>
         </>
   )
 }

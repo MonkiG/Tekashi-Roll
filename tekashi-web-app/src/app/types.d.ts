@@ -27,3 +27,10 @@ export type AuthFormData<T extends AuthType> =
   T extends 'login' ? UserLoginWithPasswordData :
     T extends 'signup' ? UserSignUp :
       UserAuth
+
+interface RoleData {
+  role_id: UUID
+  roles: {
+    role_name: string
+  }
+}
