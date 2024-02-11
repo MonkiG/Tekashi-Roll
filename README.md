@@ -31,3 +31,12 @@ cd tekashi-web-app
 npm install
 
 ```
+
+## To do
+- Agregar Boton para ver panel de administrador ⏳
+- Agregar profile icon para hacer acciones con el usuario (Cerrar sesión, ver informacion, ver pedidos, etc.) ⏳
+- Agregar Menu y Nosotros page
+- Agregar panel de administrador ✅
+- Agregar CRUD productos admin ⏳
+- Agregar CRUD pedidos admin
+- Agregar estadisticas admin

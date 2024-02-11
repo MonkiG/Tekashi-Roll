@@ -1,8 +1,12 @@
+import { type UUID } from 'crypto'
+import { type AppRoles } from './helpers/AppRoles'
+
 export type HeaderTypes = 'Main' | 'Auth'
 
 export interface MainHeaderProps {
   userName: string
   userId: string
+  userRole: AppRoles
 }
 
 export interface UserLoginWithPasswordData {
@@ -28,9 +32,26 @@ export type AuthFormData<T extends AuthType> =
     T extends 'signup' ? UserSignUp :
       UserAuth
 
-interface RoleData {
+export interface RoleData {
   role_id: UUID
   roles: {
     role_name: string
   }
 }
+
+export interface Category {
+  id: UUID
+  name: string
+  description: string
+}
+
+export interface Product {
+  id: UUID
+  name: string
+  price: string | number
+  description: string
+  imgUrl?: string
+  categoryId: string
+}
+
+export type AddProduct = Omit<Product, 'id' | 'imgUrl'> & { imgUrl: string }

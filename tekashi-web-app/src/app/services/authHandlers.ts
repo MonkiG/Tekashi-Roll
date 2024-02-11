@@ -47,3 +47,7 @@ export default async function authHandlers (type: AuthType, formData: UserLoginW
 
   throw new Error("Auth type don't allowed")
 }
+
+export async function signOut (supabase: SupabaseClient): Promise<void> {
+  await supabase.auth.signOut()
+}

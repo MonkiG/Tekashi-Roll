@@ -1,16 +1,17 @@
 import { getServerComponentClient } from '../helpers/supabaseHelpers'
 import { getUserBySession } from './authServices'
 import { type RoleData } from '../types'
+import { type User } from '@supabase/supabase-js'
+import { type AppRoles } from '../helpers/AppRoles'
 
-export async function getUserRoleBySession (): Promise<string | null> {
+export async function getUserRoleBySession (user?: User): Promise<AppRoles> {
   const supabase = getServerComponentClient()
-  const user = await getUserBySession()
+  const userBySession = user ?? await getUserBySession(supabase)
 
-  if (!user) return null
-
+  if (!userBySession) throw new Error('No user')
   const {
     data
-  } = await supabase.from('users').select('role_id, roles(role_name)').eq('id', user.id).single<RoleData>()
+  } = await supabase.from('users').select('role_id, roles(role_name)').eq('id', userBySession.id).single<RoleData>()
 
-  return data ? data.roles.role_name : null
+  return data?.roles.role_name as AppRoles
 }

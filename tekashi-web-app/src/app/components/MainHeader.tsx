@@ -4,6 +4,7 @@ import Image from 'next/image'
 import MainButton from './MainButton'
 import UserCart from './UserCart'
 import UserNotify from './UserNotify'
+import UserProfile from './UserProfile'
 
 export default function MainHeader ({ userData, className }: { userData?: MainHeaderProps, className?: string }): JSX.Element {
   return (
@@ -25,6 +26,7 @@ export default function MainHeader ({ userData, className }: { userData?: MainHe
                       ? <MainButton content={'Login'} className={'w-1/12 '} />
                       : (
                           <li className='flex justify-center items-center'>
+                            <UserProfile role={userData.userRole}/>
                             <UserNotify userId={userData.userId}/>
                             <UserCart userId={userData.userId}/>
                           </li>

@@ -1,8 +1,8 @@
 import { getServerComponentClient } from '../helpers/supabaseHelpers'
-import { type Session, type User } from '@supabase/supabase-js'
+import { type SupabaseClient, type Session, type User } from '@supabase/supabase-js'
 
-export async function getAuthSession (): Promise<Session | null> {
-  const supabase = getServerComponentClient()
+export async function getAuthSession (client?: SupabaseClient): Promise<Session | null> {
+  const supabase = client ?? getServerComponentClient()
 
   const {
     data: { session }
@@ -11,8 +11,8 @@ export async function getAuthSession (): Promise<Session | null> {
   return session
 }
 
-export async function getUserBySession (): Promise<User | undefined> {
-  const session = await getAuthSession()
+export async function getUserBySession (client?: SupabaseClient): Promise<User | undefined> {
+  const session = await getAuthSession(client)
 
   return session?.user
 }

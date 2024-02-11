@@ -8,9 +8,9 @@ export default function Orders (): JSX.Element {
       <h2 className="mb-2 mt-0 text-center font-bold text-xl">Pedidos</h2>
       <section className="h-[512px] w-[1029px] m-auto overflow-y-auto">
         {Array.from({ length: 10 }, (_, i) => (
-          <>
-            <Order key={i} id={`Order ${i}`} orderNumber={i} user='Ramón Hernández' status={OrderStatus.PLACED}/>
-          </>
+
+          <Order key={crypto.randomUUID()} id={`Order ${i}`} orderNumber={i} user='Ramón Hernández' status={OrderStatus.PLACED}/>
+
         ))}
       </section>
     </>
@@ -34,7 +34,8 @@ const Order = (orderData: OrderData): JSX.Element => {
       {/** Estos botones le pondran el status al pedido */}
       <ul className='flex items-center justify-around col-span-4 bg-gray-300'>
         {Object.values(OrderStatus).map((status, i) => (
-          <li key={status}><button className='bg-page-orange hover:bg-page-orange-hover rounded-full px-2 py-1' title={`Set order in status: ${status}`}>{status.toLocaleUpperCase()}</button></li>
+
+          <li key={crypto.randomUUID()}><button className='bg-page-orange hover:bg-page-orange-hover rounded-full px-2 py-1' title={`Set order in status: ${status}`}>{status.toLocaleUpperCase()}</button></li>
         ))}
       </ul>
       <div className='place-self-center'>
