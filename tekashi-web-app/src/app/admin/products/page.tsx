@@ -1,19 +1,12 @@
-// import { getServerComponentClient } from '@/app/helpers/supabaseHelpers'
-import CategorySection from './components/CategorySection'
+import ProductsSection from './components/ProductsSection'
+import Filter from './components/Filter'
+import FilterProvider from './components/FilterContext'
 
 export default async function Dishes (): Promise<JSX.Element> {
-  // const supabase = getServerComponentClient()
-
-  // const {
-  //   data,
-  //   error
-  // } = await supabase.from('products').select('*')
-
-  // console.log(data)
   return (
-    <>
-      {Array.from({ length: 3 }, (_, i) => <CategorySection key={i} products={Array.from({ length: 6 }, () => 'product')}/>)}
-    </>
-
+    <FilterProvider >
+      <Filter/>
+      <ProductsSection/>
+    </FilterProvider>
   )
 }

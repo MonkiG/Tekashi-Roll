@@ -3,9 +3,10 @@ import Modal from '@/app/components/Modal'
 import { getAllCategories } from '@/app/services/categoriesServices'
 import { type AddProduct, type Category } from '@/app/types'
 import { uploadProductImage } from '@/app/services/imagesServices'
-
-import { useEffect, useState, useRef } from 'react'
-import { addProduct } from '@/app/services/productsServices'
+import Image from 'next/image'
+import { useEffect, useState, useRef, useContext } from 'react'
+import { addProduct } from '@/app/services/productServices.ts/productsServices'
+import { FilterContext } from './components/FilterContext'
 
 export default function ProductModal ({ handleCloseModal }: { handleCloseModal: () => void }): JSX.Element {
   const [categories, setCategories] = useState<Category[] | null>()
@@ -16,11 +17,12 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
     categoryId: '',
     imgUrl: ''
   })
+  const { handleAgain } = useContext(FilterContext)
   const imgInputRef = useRef<HTMLInputElement | null>(null)
+  const imgInputFileRef = useRef<File | null>(null)
 
   useEffect(() => {
     getAllCategories().then(data => {
-      console.log('useEffect activado')
       setCategories(data)
     }).catch(e => { console.error(e) })
   }, [])
@@ -41,8 +43,7 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
     const file = files[0]
 
     if (!file.type.startsWith('image/')) alert('El archivo debe ser una imagen')
-
-    await uploadProductImage(file, productData.name)
+    imgInputFileRef.current = file
     setProductData(prev => ({
       ...prev,
       imgUrl: `https://hrfopsbdnnjaxeedlnot.supabase.co/storage/v1/object/public/images/products/${prev.name}`
@@ -51,7 +52,6 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const data = e.target.value
-    console.log(data)
     setProductData(prevData => {
       return {
         ...prevData,
@@ -62,36 +62,73 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
-    if (Object.values(productData).some(prop => prop === '')) return
+    if (Object.values(productData).some(prop => prop === '')) {
+      alert('No deje campos vacios')
+      return
+    }
 
+    if (!imgInputFileRef.current) {
+      alert('Seleccione una imagen')
+      return
+    }
+
+    await uploadProductImage(imgInputFileRef.current, productData.name)
     await addProduct(productData)
-    console.log('Informacion enviada')
     handleCloseModal()
+    handleAgain()
   }
 
   return (
-    <>
-       <Modal className='overflow-hidden flex flex-col justify-center items-center'>
-            <form onSubmit={handleSubmit} className='w-3/4 h-5/6 bg-page-red border-3 border-page-orange border-solid relative'>
-                <button className='absolute right-5 top-3 text-3xl' onClick={handleCloseModal} title='Close modal'>x</button>
-                <input type="text" name='name' required placeholder='Nombre del producto' value={productData.name} onChange={handleInputChange}/>
-                <input type="text" name='price' required placeholder='Precio del producto' value={productData.price} onChange={handleInputChange}/>
-                <textarea className='w-3/4 resize-none' name="description" required placeholder='Descripción del producto' value={productData.description} onChange={handleInputChange}></textarea>
-                <div className='flex flex-col h-1/2 bg-green-200'>
-                    <label htmlFor="image" className='col-spab-2'>Selecciona la imagen del producto</label>
-                    <input type="file" name="image" accept='image/*' ref={imgInputRef} onChange={handleFileChange} className='text-hidden text-transparent'/>
-                </div>
-                {
-                    categories &&
-                    <select name="category_id" required onChange={handleSelectChange}>
-                        {categories.map(categorie => (
-                            <option value={categorie.id} key={categorie.id}>{categorie.name}</option>
-                        ))}
-                    </select>
-                }
-                <button type='submit' className="p-1 text-center bg-page-orange hover:bg-page-orange-hover rounded-sm">Agregar producto</button>
-            </form>
-       </Modal>
-   </>
+
+    <Modal className='overflow-hidden flex flex-col justify-center items-center'>
+      <div className='w-3/4 h-5/6 bg-gray-200 border-3 border-page-orange border-solid px-16 pt-12 relative'>
+        <hr className='border-page-gray w-full m-auto border-t-2 mb-2'/>
+        <button className='absolute right-5 top-3 text-3xl' onClick={handleCloseModal} title='Close modal'>x</button>
+        <form onSubmit={handleSubmit} className='flex flex-col h-full w-full'>
+          <div className='py-1'>
+            <label htmlFor="name" className='font-bold pr-2'>Nombre del producto:</label>
+            <input type="text" name='name' required placeholder='Monkey Roll' className='px-1' value={productData.name} onChange={handleInputChange}/>
+          </div>
+          <div className='py-1'>
+            <label htmlFor="price" className='font-bold pr-2'>Precio:</label>
+            <input type="number" name='price' required placeholder='$350.00 MX' className='px-1' value={productData.price} onChange={handleInputChange}/>
+          </div>
+          <div className='py-1 flex flex-col gap-1'>
+            <label htmlFor="description" className='font-bold pr-2'>Descripción:</label>
+            <textarea className='px-2 resize-none' name="description" required placeholder='Rollo de arroz cubierto con platano dorado relleno de aguacate, pepino, queso crema, camaron y surimi' value={productData.description} onChange={handleInputChange}></textarea>
+          </div>
+          <div className='py-1'>
+            <label htmlFor="category_id" className='font-bold pr-2'>Categoría:</label>
+              <select name="category_id" required onChange={handleSelectChange}>
+                <option value={''}>Seleccione una categoria</option>
+                {categories?.map(categorie => (
+                  <option value={categorie.id} key={categorie.id}>{categorie.name}</option>
+                ))}
+              </select>
+            </div>
+          <div className='flex h-1/2 py-2 justify-center items-center px-2'>
+
+            <div>
+              <label htmlFor="image" className=''>Selecciona la imagen del producto</label>
+              <input type="file" name="image" accept='image/*' ref={imgInputRef} onChange={handleFileChange} className='text-hidden text-transparent'/>
+            </div>
+
+            { /* eslint-disable-next-line */
+              imgInputFileRef.current && (
+                <Image
+                  src={URL.createObjectURL(imgInputFileRef.current)}
+                  width={316}
+                  height={160}
+                  alt={`Imagen de producto: ${productData.name}`}
+                  className='w-[316px] h-[160px] object-cover'
+                />
+              )
+            }
+          </div>
+          <button type='submit' className="p-1 text-center bg-page-orange hover:bg-page-orange-hover rounded-sm w-1/5 m-auto">Agregar producto</button>
+        </form>
+      </div>
+    </Modal>
+
   )
 }

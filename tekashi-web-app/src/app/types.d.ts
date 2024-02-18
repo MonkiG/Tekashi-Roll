@@ -50,8 +50,9 @@ export interface Product {
   name: string
   price: string | number
   description: string
-  imgUrl?: string
+  imgUrl: string
   categoryId: string
+  enabled: boolean
 }
 
-export type AddProduct = Omit<Product, 'id' | 'imgUrl'> & { imgUrl: string }
+export type AddProduct = Omit<Product, 'id' | 'enabled'> & { imgUrl: string }

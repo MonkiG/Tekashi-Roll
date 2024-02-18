@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { AppRoles } from '../helpers/AppRoles'
 import { getUserRoleBySession } from '../services/userServices'
 
-export default async function AdminLayout ({ children, modal }: { children: React.ReactNode, modal: React.ReactNode }): Promise<JSX.Element> {
+export default async function AdminLayout ({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
   const userRole = await getUserRoleBySession()
 
   if (!userRole) redirect('/auth/login')
@@ -16,9 +16,8 @@ export default async function AdminLayout ({ children, modal }: { children: Reac
   return (
         <>
           <AdminHeader />
-          <main className="h-full my-10 mx-14">
+          <main className="h-full my-9 mx-14">
             {children}
-            {modal}
           </main>
         </>
   )
