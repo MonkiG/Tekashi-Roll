@@ -1,7 +1,11 @@
+import Filter from './Filter'
+import ProductSection from './ProductsSection'
+import FilterProvider from './FilterContext'
 export default async function Menu (): Promise<JSX.Element> {
   return (
-    <>
-      <section>Menu</section>
-    </>
+    <FilterProvider>
+      <Filter/>
+      <ProductSection />
+    </FilterProvider>
   )
 }
