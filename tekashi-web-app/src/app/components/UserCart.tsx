@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import Cart from './icons/Cart'
 import MainButton from './MainButton'
 import Image from 'next/image'
+import { CartContext } from '../(client-view)/CartContext'
 
 export default function UserCart ({ userId }: { userId: string }): JSX.Element {
   const [showCart, setShowCart] = useState(false)
-
+  const { handleDeleteTogoProduct, products } = useContext(CartContext)
   return (
    <>
     <button
@@ -27,12 +28,14 @@ export default function UserCart ({ userId }: { userId: string }): JSX.Element {
               >X</button>
             </header>
             <ul className='overflow-auto'>
-                {Array.from({ length: 10 }, (_, i) => <CartProduct
-                                                        handleDeleteProduct={() => { console.log(`producto ${i} eliminado`) }}
-                                                        key={i}
-                                                        numberOfProduct={i}
-                                                      />
-                )}
+                {products
+                  ? products.map(product => <CartProduct
+                                                        handleDeleteProduct={() => { handleDeleteTogoProduct({ productId: product.id }) }}
+                                                        key={product.id}
+                                                        numberOfProduct={1}
+                                                      />)
+                  : null
+                }
             </ul>
             <footer className='text-sm'>
                 <hr className='border-page-gray'/>
@@ -64,21 +67,28 @@ const CartProduct = ({
 }: CartProductProps): JSX.Element => {
   const [productCount, setProductCount] = useState<number>(numberOfProduct)
 
-  const handlePlusCounter = (): void => {
+  const handlePlusCounter = useCallback((): void => {
     setProductCount(prevCount => {
       return Number(prevCount) + 1
     })
-  }
-  const handleSubtractCounter = (): void => {
+  }, [])
+  const handleSubtractCounter = useCallback((): void => {
     setProductCount(prevCount => {
       return Number(prevCount) > 0 ? Number(prevCount) - 1 : 0
     })
-  }
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  }, [])
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value
     const number = Number(value)
     setProductCount(number)
-  }
+  }, [])
+
+  useEffect(() => {
+    // Cambiar el numero de productos
+    console.log(productCount)
+  }, [productCount]) // En cada operacion
+
   return (
     <>
       <li className='flex my-3 text-sm relative'>

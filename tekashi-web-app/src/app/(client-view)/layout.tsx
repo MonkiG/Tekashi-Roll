@@ -2,8 +2,9 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { getUserBySession } from '../services/authServices'
 import { getUserRoleBySession } from '../services/userServices'
+import { CartProvider } from './CartContext'
 
-export default async function MainRouteLayout ({ children }: { children: React.ReactDOM }): Promise<JSX.Element> {
+export default async function MainRouteLayout ({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
   const user = await getUserBySession()
   let userData
 
@@ -17,18 +18,20 @@ export default async function MainRouteLayout ({ children }: { children: React.R
 
   return (
         <>
+          <CartProvider>
             <Header
-              path='/'
-              userData={
-                  (userData) &&
-                 {
-                   userName: `${userData.name} ${userData.lastName}`,
-                   userId: userData.id,
-                   userRole: userData.userRole
-                 }
-            }/>
-                {children}
-            <Footer />
+                path='/'
+                userData={
+                    (userData) &&
+                  {
+                    userName: `${userData.name} ${userData.lastName}`,
+                    userId: userData.id,
+                    userRole: userData.userRole
+                  }
+              }/>
+                  {children}
+              <Footer />
+          </CartProvider>
         </>
   )
 }
