@@ -29,7 +29,7 @@ export default async function MainAdmin (): Promise<JSX.Element> {
           href={'/admin/orders/kitchen'}
           className='bg-page-orange hover:bg-page-orange-hover p-8 w-40 h-40 place-self-center rounded-md flex items-center justify-center' title='Ver los pedidos encocina'
         >
-          <Kitchen/>
+          <Kitchen width={200} height={200}/>
         </Link>
       </section>
     </>
