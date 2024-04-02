@@ -54,7 +54,7 @@ export default function FilterProvider ({ children }: { children: React.ReactNod
   const handleFilter = (products: Product[] | null): Product[] => {
     if (!products) return [] as Product[]
     // if (filters.category === 'any') return products
-    return toCartProducts(products.filter(product =>
+    return toCartProducts(products.filter(product => product.enabled &&
       ((filters.category === 'any' || product.categoryId === filters.category) &&
       (String(product.price).includes(filters.price) || String(product.price) === '') &&
       (product.name === '' || product.name.toLocaleLowerCase().includes(filters.name.toLocaleLowerCase())))
