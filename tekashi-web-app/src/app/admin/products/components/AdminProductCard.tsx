@@ -7,10 +7,12 @@ import Bin from '@/app/components/icons/Bin'
 import StatusCircle from '@/app/components/icons/StatusCircle'
 import { type Product } from '@/app/types'
 
-export default function AdminProductCard ({ data }: { data: Product }): JSX.Element {
+export default function AdminProductCard ({ data, handleDeleteProduct }: { data: Product, handleDeleteProduct: () => Promise<void> }): JSX.Element {
   return (
       <article className='relative min-h-52 flex flex-col justify-between max-h-[244px] max-w-[316px]'>
-        <button className='absolute right-[-10px] top-[-10px] bg-white w-14 h-14 rounded-full flex justify-center items-center ' title='Delete product'><Bin /></button>
+        <button
+          onClick={handleDeleteProduct}
+          className='absolute right-[-10px] top-[-10px] bg-white w-14 h-14 rounded-full flex justify-center items-center ' title='Delete product'><Bin /></button>
         <figure className=''>
           <Image src={data.imgUrl} alt='product image' width={316} height={160} className='w-[316px] h-[160px] object-cover'/>
           <h3 className='px-2 pt-2'>{data.name}</h3>

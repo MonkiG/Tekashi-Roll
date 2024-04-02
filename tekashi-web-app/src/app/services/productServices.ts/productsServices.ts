@@ -21,3 +21,12 @@ export async function addProduct (productData: AddProduct): Promise<Product | nu
 
   return data
 }
+
+export async function deleteProductById (productId: string): Promise<boolean> {
+  const supabase = createClientComponentClient()
+  const {
+    data
+
+  } = await supabase.from('products').delete().eq('id', productId).select()
+  return Boolean(data)
+}

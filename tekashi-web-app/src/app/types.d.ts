@@ -3,12 +3,14 @@ import { type AppRoles } from './helpers/AppRoles'
 
 export type HeaderTypes = 'Main' | 'Auth'
 
-export interface MainHeaderProps {
-  userName: string
-  userId: string
-  userRole: AppRoles
-}
+export interface User {
+  id: UUID
+  name: string
+  lastName: string
+  phone: string
+  role: AppRoles
 
+}
 export interface UserLoginWithPasswordData {
   email?: string
   password: string

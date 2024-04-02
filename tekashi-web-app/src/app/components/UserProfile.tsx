@@ -6,8 +6,9 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { AppRoles } from '../helpers/AppRoles'
+import { type User } from '../types'
 
-export default function UserProfile ({ role }: { role: AppRoles }): JSX.Element {
+export default function UserProfile ({ user }: { user: User }): JSX.Element {
   const [showProfilePreview, setShowProfilePreview] = useState(false)
   const supabase = createClientComponentClient()
   const router = useRouter()
@@ -25,7 +26,7 @@ export default function UserProfile ({ role }: { role: AppRoles }): JSX.Element 
         </button>
         {
             showProfilePreview &&
-            <section className='absolute bg-white right-[280px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col'>
+            <section className='absolute bg-white right-[260px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col'>
             <header className='relative bg-gray-300 font-[Lalezar] p-5'>
                 <h3 className='text-center uppercase'>Nombre de usuario</h3>
                 <button
@@ -36,7 +37,7 @@ export default function UserProfile ({ role }: { role: AppRoles }): JSX.Element 
             <ul>
                 <li><button onClick={handleSignOut}>Cerrar sesión</button></li>
                 {
-                    role === AppRoles.app_admin &&
+                    user.role === AppRoles.app_admin &&
                     <li><Link href={'/admin'}>Panel administrador</Link></li>
                 }
             </ul>

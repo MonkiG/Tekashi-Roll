@@ -1,44 +1,34 @@
 'use client'
 import { createContext } from 'react'
-import useUserTogo from '../hooks/useUserTogo'
+import useUserTogo, { type CartProduct } from '../hooks/useUserTogo'
 
 interface CartContextType {
-  addToCart: ({ productId }: { productId: string }) => void
   products: any[]
-  handleSetTogoProducts: ({ productId }: { productId: string }) => void
-  handleSetTogoProductAmount: ({ productId, amount }: { productId: string, amount: number | string }) => void
+  handleSetTogoProducts: ({ product }: { product: CartProduct }) => void
   handleDeleteTogoProduct: ({ productId }: { productId: string }) => void
+  handleSetTogoProductAmount: ({ productId }: { productId: string, amount: number | string }) => void
 }
 export const CartContext = createContext<CartContextType>({
-  addToCart: ({
-    productId
-  }: {
-    productId: string
-  }) => {},
   products: [],
-  handleSetTogoProducts: ({ productId }: { productId: string }) => {},
-  handleSetTogoProductAmount: ({ productId, amount }: { productId: string, amount: number | string }) => {},
-  handleDeleteTogoProduct: ({ productId }: { productId: string }) => {}
+  handleSetTogoProducts: ({ product }: { product: CartProduct }) => {},
+  handleDeleteTogoProduct: ({ productId }: { productId: string }) => {},
+  handleSetTogoProductAmount: ({ productId }: { productId: string, amount: number | string }) => {}
 })
 
 export function CartProvider ({ children }: { children: React.ReactNode }): JSX.Element {
   const {
     togoProducts: products,
     handleSetTogoProducts,
-    handleSetTogoProductAmount,
-    handleDeleteTogoProduct
+    handleDeleteTogoProduct,
+    handleSetTogoProductAmount
   } = useUserTogo()
 
-  const addToCart = ({ productId }: { productId: string }): void => {
-    handleSetTogoProducts({ productId })
-  }
   return (
     <CartContext.Provider value={{
       products,
-      addToCart,
       handleSetTogoProducts,
-      handleSetTogoProductAmount,
-      handleDeleteTogoProduct
+      handleDeleteTogoProduct,
+      handleSetTogoProductAmount
     }}>
         {children}
     </CartContext.Provider>

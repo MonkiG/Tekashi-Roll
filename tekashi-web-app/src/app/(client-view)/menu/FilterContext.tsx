@@ -1,6 +1,7 @@
 'use client'
 import useCategories from '@/app/hooks/useCategories'
 import useProducts from '@/app/hooks/useProducts'
+import { type CartProduct } from '@/app/hooks/useUserTogo'
 import { type Category, type Product } from '@/app/types'
 import { createContext, useState } from 'react'
 
@@ -48,15 +49,17 @@ export default function FilterProvider ({ children }: { children: React.ReactNod
     })
   }
 
+  const toCartProducts = (products: Product[]): CartProduct[] => products.map((product, i) => ({ ...product, amount: 1 }))
+
   const handleFilter = (products: Product[] | null): Product[] => {
     if (!products) return [] as Product[]
     // if (filters.category === 'any') return products
-    return products.filter(product =>
+    return toCartProducts(products.filter(product =>
       ((filters.category === 'any' || product.categoryId === filters.category) &&
       (String(product.price).includes(filters.price) || String(product.price) === '') &&
       (product.name === '' || product.name.toLocaleLowerCase().includes(filters.name.toLocaleLowerCase())))
 
-    )
+    ))
   }
 
   const handleAgain = (): void => { setAgain(!again) }

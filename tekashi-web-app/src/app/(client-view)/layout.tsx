@@ -1,34 +1,26 @@
-import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { getUserBySession } from '../services/authServices'
 import { getUserRoleBySession } from '../services/userServices'
+import { type User } from '../types'
 import { CartProvider } from './CartContext'
+import ClientViewHeader from './components/ClientViewHeader'
 
 export default async function MainRouteLayout ({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
-  const user = await getUserBySession()
-  let userData
+  const userQuery = await getUserBySession()
+  let user
 
   /* hacer un getUserCredentials */
-  if (user) {
-    const userRole = await getUserRoleBySession(user)
-    userData = user.user_metadata
-    userData.userId = user.id
-    userData.userRole = userRole
+  if (userQuery) {
+    const userRole = await getUserRoleBySession(userQuery)
+    user = userQuery.user_metadata
+    user.id = userQuery.id
+    user.role = userRole
   }
 
   return (
         <>
           <CartProvider>
-            <Header
-                path='/'
-                userData={
-                    (userData) &&
-                  {
-                    userName: `${userData.name} ${userData.lastName}`,
-                    userId: userData.id,
-                    userRole: userData.userRole
-                  }
-              }/>
+                <ClientViewHeader user={user as User | undefined} />
                   {children}
               <Footer />
           </CartProvider>

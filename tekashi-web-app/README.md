@@ -37,4 +37,18 @@ Build script allows to build the code to production:
     npm run build
 ```
 
-<!-- ## To Do -->
+### To do 
+
+- Implement disabled product
+- Do admin delete product ✅
+- Do see description and edit product
+
+- Do the payments behaviour
+- Implement togo behaviour
+- Make the user page
+- Implement user notifications
+- implement kitchen behaviour
+- Make About page
+- Implement stats
+
+- implement order behaviour

@@ -5,10 +5,22 @@ import Cart from './icons/Cart'
 import MainButton from './MainButton'
 import Image from 'next/image'
 import { CartContext } from '../(client-view)/CartContext'
+import { type CartProduct } from '../hooks/useUserTogo'
+import { type User } from '../types'
 
-export default function UserCart ({ userId }: { userId: string }): JSX.Element {
+export default function UserCart ({ user }: { user: User }): JSX.Element {
   const [showCart, setShowCart] = useState(false)
-  const { handleDeleteTogoProduct, products } = useContext(CartContext)
+  const { handleDeleteTogoProduct, handleSetTogoProductAmount, products } = useContext(CartContext)
+
+  const reducePrice = useCallback((): number => products.reduce((prev, curr, i, arr) => {
+    return prev + (curr.price * curr.amount)
+  }, 0), [products])
+
+  const [total, setTotal] = useState<number>(reducePrice())
+
+  useEffect(() => {
+    setTotal(reducePrice())
+  }, [products])
   return (
    <>
     <button
@@ -19,7 +31,7 @@ export default function UserCart ({ userId }: { userId: string }): JSX.Element {
     </button>
     {showCart &&
         <section
-          className='absolute bg-white right-[210px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col justify-between'>
+          className='absolute bg-white right-[200px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col justify-between'>
             <header className='relative bg-gray-300 font-[Lalezar] p-5'>
               <h3 className='text-center uppercase'>Mi carrito</h3>
               <button
@@ -29,10 +41,11 @@ export default function UserCart ({ userId }: { userId: string }): JSX.Element {
             </header>
             <ul className='overflow-auto'>
                 {products
-                  ? products.map(product => <CartProduct
+                  ? products.map(product => <ECartProduct
                                                         handleDeleteProduct={() => { handleDeleteTogoProduct({ productId: product.id }) }}
+                                                        handleSetTogoProductAmount={handleSetTogoProductAmount}
                                                         key={product.id}
-                                                        numberOfProduct={1}
+                                                        product={product}
                                                       />)
                   : null
                 }
@@ -41,8 +54,8 @@ export default function UserCart ({ userId }: { userId: string }): JSX.Element {
                 <hr className='border-page-gray'/>
                 <div className='uppercase text-center w-full p-1'>total: </div>
                 <div className='flex justify-around items-center p-3'>
-                    <span>$10,000 MXN</span> {/** Cambiar divisa dinamicamente */}
-                    <MainButton content='Pagar' className='w-20' href='/'/>
+                    <span>${total && total} MXN</span> {/** Cambiar divisa dinamicamente */}
+                    <MainButton content='Pagar' className='w-20' href={`/checkout?cart=${encodeURIComponent(JSON.stringify(products))}`}/>
                 </div>
             </footer>
         </section>
@@ -51,52 +64,46 @@ export default function UserCart ({ userId }: { userId: string }): JSX.Element {
   )
 }
 
+/** TODO
+ * Refactorizate this code
+ */
 interface CartProductProps {
-  productName?: string
-  productPrice?: string | number
-  productImgUrl?: string
-  numberOfProduct?: number
+  product: CartProduct
   handleDeleteProduct: () => void
+  handleSetTogoProductAmount: ({ productId, amount }: { productId: string, amount: number | string }) => void
 }
-const CartProduct = ({
+const ECartProduct = ({
   handleDeleteProduct,
-  numberOfProduct = 0,
-  productImgUrl = 'https://placehold.co/96x40',
-  productName = 'Nombre del Platillo',
-  productPrice = '10,000'
+  product,
+  handleSetTogoProductAmount
 }: CartProductProps): JSX.Element => {
-  const [productCount, setProductCount] = useState<number>(numberOfProduct)
+  const [productCount, setProductCount] = useState<number | string>(product.amount ?? 1)
 
   const handlePlusCounter = useCallback((): void => {
-    setProductCount(prevCount => {
-      return Number(prevCount) + 1
-    })
-  }, [])
+    handleSetTogoProductAmount({ productId: product.id, amount: Number(productCount) + 1 })
+    setProductCount(Number(productCount) + 1)
+  }, [productCount, handleSetTogoProductAmount])
   const handleSubtractCounter = useCallback((): void => {
-    setProductCount(prevCount => {
-      return Number(prevCount) > 0 ? Number(prevCount) - 1 : 0
-    })
-  }, [])
+    handleSetTogoProductAmount({ productId: product.id, amount: Number(productCount) > 0 ? Number(productCount) - 1 : 0 })
+    setProductCount(Number(productCount) > 0 ? Number(productCount) - 1 : 0)
+  }, [productCount, handleSetTogoProductAmount])
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value
     const number = Number(value)
-    setProductCount(number)
-  }, [])
 
-  useEffect(() => {
-    // Cambiar el numero de productos
-    console.log(productCount)
-  }, [productCount]) // En cada operacion
+    handleSetTogoProductAmount({ productId: product.id, amount: number })
+    setProductCount(number)
+  }, [productCount, handleSetTogoProductAmount])
 
   return (
     <>
       <li className='flex my-3 text-sm relative'>
         <button className='absolute right-2 top-[-7px]' onClick={handleDeleteProduct}>x</button>
-        <Image src={productImgUrl} alt="product image" width={96} height={40} className='mx-1 w-24 h-10' />
+        <Image src={product.imgUrl} alt="product image" width={96} height={40} className='mx-1 w-24 h-10' />
         <div className='text-xs flex flex-col justify-center mx-3'>
-            <span className='block'>{productName}</span>
-            <span className='block'>Precio: ${productPrice} MXN</span>
+            <span className='block'>{product.name}</span>
+            <span className='block'>Precio: ${parseFloat(product.price as string) * parseInt(product.amount as string)} MXN</span>
         </div>
         <div className='flex flex-col justify-center items-center'>
           <input type='number' value={productCount.toLocaleString()} className='w-6 text-center' onChange={handleChange} />

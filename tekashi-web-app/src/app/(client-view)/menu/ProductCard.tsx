@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import Description from '@/app/components/icons/Description'
 import AddCart from '@/app/components/icons/AddCart'
-export default function ProductCard ({ data, addToCart }: { data: any, addToCart: ({ productId }: { productId: string }) => void }): JSX.Element {
+import { type Product } from '@/app/types'
+export default function ProductCard ({ data, addToCart }: { data: any, addToCart: ({ product }: { product: Product }) => void }): JSX.Element {
   return (
         <article className='relative min-h-52 flex flex-col justify-between max-h-[244px] max-w-[316px]'>
         <figure className=''>
@@ -16,7 +17,7 @@ export default function ProductCard ({ data, addToCart }: { data: any, addToCart
               <button
                 className='flex justify-center items-center bg-transparent rounded-full hover:bg-[rgba(0,0,0,0.1)] w-10 h-10'
                 title='Add to cart'
-                onClick={() => { addToCart({ productId: data.id }) }}
+                onClick={() => { addToCart({ product: data }) }}
               >
                 <AddCart />
               </button>

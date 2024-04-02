@@ -5,13 +5,20 @@ import { useRouter } from 'next/navigation'
 import AdminProductCard from './AdminProductCard'
 import { FilterContext } from './FilterContext'
 import Missing from '@/app/components/Missing'
+import { deleteProductById } from '@/app/services/productServices.ts/productsServices'
 
 export default function ProductsSection (): JSX.Element {
   const [showModal, setShowModal] = useState(false)
-  const { products, filters, categories } = useContext(FilterContext)
+  const { products, filters, categories, handleAgain } = useContext(FilterContext)
   const router = useRouter()
   const handleShowModal = (): void => { setShowModal(true) }
   const handleCloseModal = (): void => { setShowModal(false); router.push('/admin/products') }
+
+  const handleDeleteProduct = async (id: string): Promise<void> => {
+    await deleteProductById(id)
+    handleAgain()
+  }
+
   return (
     <>
 
@@ -23,7 +30,7 @@ export default function ProductsSection (): JSX.Element {
         products &&
         <section className={`mx-16 my-3 grid ${products.length > 0 ? 'grid-cols-3' : 'grid-cols-1 items-center'} row-auto gap-x-20 gap-y-10 h-[500px] overflow-auto`}>
         {products.length > 0
-          ? products.map((product, i) => <AdminProductCard key={product.id} data={product}/>)
+          ? products.map((product, i) => <AdminProductCard handleDeleteProduct={async () => { await handleDeleteProduct(product.id) }} key={product.id} data={product}/>)
           : <Missing text='No se encontraron productos' className='place-self-center'/>
         }
       </section>

@@ -1,8 +1,9 @@
 'use client'
+import { type User } from '../types'
 import Ring from './icons/Ring'
 import { useState } from 'react'
 
-export default function UserNotify ({ userId }: { userId: string }): JSX.Element {
+export default function UserNotify ({ user }: { user: User }): JSX.Element {
   const [showNotify, setShowNotify] = useState(false)
   const [showBullet, setShowBullet] = useState(true)
   return (

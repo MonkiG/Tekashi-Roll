@@ -1,6 +1,8 @@
 import postgres from 'postgres'
-import config from './config'
-/* eslint-disable-next-line */
-const sql = postgres(config.DATABASE_CONNECTION_STRING!)
+import dotenvConfig from './dotenvConfig'
+import { createClient } from '@supabase/supabase-js'
 
-export default sql
+/* eslint-disable-next-line */
+export const sql = postgres(dotenvConfig.DATABASE_CONNECTION_STRING!)
+/* eslint-disable-next-line */
+export const supabase = createClient(dotenvConfig.SUPABASE_URL!, dotenvConfig.SUPABASE_ANON_KEY!)

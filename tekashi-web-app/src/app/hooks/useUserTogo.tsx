@@ -1,34 +1,36 @@
 import { useEffect, useState } from 'react'
+import { type Product } from '../types'
 
-export interface CartProduct {
-  id: string
+export interface CartProduct extends Product {
   amount: number | string
 }
 
 export default function useUserTogo (): {
   togoProducts: CartProduct[]
-  handleSetTogoProducts: ({ productId }: { productId: string }) => void
-  handleSetTogoProductAmount: ({ productId, amount }: { productId: string, amount: number | string }) => void
+  handleSetTogoProducts: ({ product }: { product: CartProduct }) => void
   handleDeleteTogoProduct: ({ productId }: { productId: string }) => void
+  handleSetTogoProductAmount: ({ productId, amount }: { productId: string, amount: number | string }) => void
 } {
   const [togoProducts, setTogoProducts] = useState<CartProduct[]>([])
 
-  const handleSetTogoProducts = ({ productId }: { productId: string }): void => {
+  const handleSetTogoProducts = ({ product }: { product: CartProduct }): void => {
+    const current = togoProducts.find(x => x.id === product.id)
+    if (current) return
     setTogoProducts(prev => {
-      return [...prev, { id: productId, amount: 1 }]
+      return [...prev, product]
     })
   }
 
   const handleSetTogoProductAmount = ({ productId, amount }: { productId: string, amount: number | string }): void => {
     setTogoProducts(prev => {
-      const product = prev.find(x => x.id === productId)
-      if (!product) return [...prev]
+      const updatedProducts = prev.map(product => {
+        if (product.id === productId) {
+          return { ...product, amount }
+        }
+        return product
+      })
 
-      product.amount = amount
-      return [
-        ...prev,
-        product
-      ]
+      return updatedProducts
     })
   }
 
@@ -46,7 +48,7 @@ export default function useUserTogo (): {
   return {
     togoProducts,
     handleSetTogoProducts,
-    handleSetTogoProductAmount,
-    handleDeleteTogoProduct
+    handleDeleteTogoProduct,
+    handleSetTogoProductAmount
   }
 }
