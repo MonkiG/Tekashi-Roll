@@ -39,14 +39,15 @@ Build script allows to build the code to production:
 
 ### To do 
 
-- Implement disabled product
+- Implement disabled product ✅
 - Do admin delete product ✅
-- Do see description and edit product
+- Do edit product ✅
+- Do see description ✅
+- Make the user page
+- Implement user notifications
 
 - Do the payments behaviour
 - Implement togo behaviour
-- Make the user page
-- Implement user notifications
 - implement kitchen behaviour
 - Make About page
 - Implement stats
