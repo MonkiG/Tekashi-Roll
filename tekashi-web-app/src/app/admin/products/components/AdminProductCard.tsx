@@ -6,16 +6,26 @@ import Description from '@/app/components/icons/Description'
 import Bin from '@/app/components/icons/Bin'
 import StatusCircle from '@/app/components/icons/StatusCircle'
 import { type Product } from '@/app/types'
+import { useState } from 'react'
 
 export default function AdminProductCard ({
   data,
   handleDeleteProduct,
-  handleStatus
+  handleStatus,
+  handleEditProduct,
+  openEditModal
 }: {
   data: Product
   handleDeleteProduct: () => Promise<void>
   handleStatus: () => Promise<void>
+  handleEditProduct: () => Promise<void>
+  openEditModal: () => void
 }): JSX.Element {
+  const [showDescription, setShowDescription] = useState(false)
+
+  const handleDescription = (): void => {
+    setShowDescription(!showDescription)
+  }
   return (
       <article className='relative min-h-52 flex flex-col justify-between max-h-[244px] max-w-[316px]'>
         <button
@@ -24,13 +34,16 @@ export default function AdminProductCard ({
         <figure className=''>
           <Image src={data.imgUrl} alt='product image' width={316} height={160} className='w-[316px] h-[160px] object-cover'/>
           <h3 className='px-2 pt-2'>{data.name}</h3>
+          {showDescription && <p className='px-2 text-sm'>{data.description}</p>}
           <div className='flex justify-between items-center px-2 mt-2'>
             <span>Precio: ${data.price} MXN</span>
             <div className='w-1/2 flex items-center justify-end'>
-              <button className='flex justify-center items-center bg-transparent rounded-full hover:bg-[rgba(0,0,0,0.1)] w-10 h-10' title='See product description'>
+              <button
+              onClick={handleDescription}
+              className='flex justify-center items-center bg-transparent rounded-full hover:bg-[rgba(0,0,0,0.1)] w-10 h-10' title='See product description'>
                 <Description />
               </button>
-              <button className='flex justify-center items-center bg-transparent rounded-full hover:bg-[rgba(0,0,0,0.1)] w-10 h-10' title='Edit product'>
+              <button onClick={openEditModal} className='flex justify-center items-center bg-transparent rounded-full hover:bg-[rgba(0,0,0,0.1)] w-10 h-10' title='Edit product'>
                 <Edit />
               </button>
               <button onClick={handleStatus}

@@ -12,3 +12,11 @@ export async function uploadProductImage (imageFile: File, productName: string):
 
   return data.path
 }
+
+export async function deleteProductImage (productName: string): Promise<void> {
+  const supabase = createClientComponentClient()
+  await supabase.storage.from('images').remove([`products/${productName}`])
+
+  // console.log(data)
+  // console.error(error)
+}

@@ -7,10 +7,11 @@ import Image from 'next/image'
 import { useEffect, useState, useRef, useContext } from 'react'
 import { addProduct } from '@/app/services/productServices.ts/productsServices'
 import { FilterContext } from './components/FilterContext'
+import editProductById from '@/app/services/productServices.ts/editProductById'
 
-export default function ProductModal ({ handleCloseModal }: { handleCloseModal: () => void }): JSX.Element {
+export default function ProductModal ({ handleCloseModal, product }: { handleCloseModal: () => void, product?: AddProduct & { id: `${string}-${string}-${string}-${string}-${string}` } }): JSX.Element {
   const [categories, setCategories] = useState<Category[] | null>()
-  const [productData, setProductData] = useState<AddProduct>({
+  const [productData, setProductData] = useState<AddProduct>(product ?? {
     name: '',
     price: '',
     description: '',
@@ -67,13 +68,17 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
       return
     }
 
-    if (!imgInputFileRef.current) {
-      alert('Seleccione una imagen')
-      return
+    if (imgInputFileRef.current) {
+      await uploadProductImage(imgInputFileRef.current, productData.name)
     }
 
-    await uploadProductImage(imgInputFileRef.current, productData.name)
-    await addProduct(productData)
+    if (product) {
+      const { imgUrl, categoryId, ...rest } = productData
+
+      await editProductById(product.id, rest)
+    } else {
+      await addProduct(productData)
+    }
     handleCloseModal()
     handleAgain()
   }
@@ -102,7 +107,7 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
               <select name="category_id" required onChange={handleSelectChange}>
                 <option value={''}>Seleccione una categoria</option>
                 {categories?.map(categorie => (
-                  <option value={categorie.id} key={categorie.id}>{categorie.name}</option>
+                  <option value={categorie.id} key={categorie.id} selected={categorie.id === product?.categoryId}>{categorie.name}</option>
                 ))}
               </select>
             </div>
@@ -114,9 +119,9 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
             </div>
 
             { /* eslint-disable-next-line */
-              imgInputFileRef.current && (
+              (imgInputFileRef.current || (product && product.imgUrl)) && (
                 <Image
-                  src={URL.createObjectURL(imgInputFileRef.current)}
+                  src={imgInputFileRef.current ? URL.createObjectURL(imgInputFileRef.current) : (product ? product.imgUrl : '')}
                   width={316}
                   height={160}
                   alt={`Imagen de producto: ${productData.name}`}
@@ -125,7 +130,7 @@ export default function ProductModal ({ handleCloseModal }: { handleCloseModal: 
               )
             }
           </div>
-          <button type='submit' className="p-1 text-center bg-page-orange hover:bg-page-orange-hover rounded-sm w-1/5 m-auto">Agregar producto</button>
+          <button type='submit' className="p-1 text-center bg-page-orange hover:bg-page-orange-hover rounded-sm w-1/5 m-auto">{product ? 'Editar producto' : 'Agregar producto'}</button>
         </form>
       </div>
     </Modal>
