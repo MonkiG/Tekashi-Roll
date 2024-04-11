@@ -16,13 +16,12 @@ export default async function MainRouteLayout ({ children }: { children: React.R
     user.id = userQuery.id
     user.role = userRole
   }
-
   return (
         <>
           <CartProvider>
-                <ClientViewHeader user={user as User | undefined} />
-                  {children}
-              <Footer />
+            <ClientViewHeader user={user as User | undefined} />
+              {children}
+            <Footer className='pb-0' />
           </CartProvider>
         </>
   )

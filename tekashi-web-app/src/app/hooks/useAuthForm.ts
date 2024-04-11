@@ -33,6 +33,7 @@ export default function useAuthForm (
     e.preventDefault()
     const authResult = await authHandlers(path, formData, supabase)
     if (path === 'login' && (authResult && 'userId' in authResult)) {
+      router.prefetch(`/user/${authResult.userId}`)
       router.push(`/user/${authResult.userId}`)
     }
   }

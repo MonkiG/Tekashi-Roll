@@ -43,11 +43,12 @@ Build script allows to build the code to production:
 - Do admin delete product ✅
 - Do edit product ✅
 - Do see description ✅
-- Make the user page
+- Make the user page ✅
+- Implement togo behaviour ⌛
 - Implement user notifications
 
+- Bug header doest charge when login and navigate, reload needed
 - Do the payments behaviour
-- Implement togo behaviour
 - implement kitchen behaviour
 - Make About page
 - Implement stats

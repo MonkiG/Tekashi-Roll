@@ -35,6 +35,7 @@ export default function UserProfile ({ user }: { user: User }): JSX.Element {
                 >X</button>
             </header>
             <ul>
+                <li><Link href={`/user/${user.id}`}>Ver perfil</Link></li>
                 <li><button onClick={handleSignOut}>Cerrar sesión</button></li>
                 {
                     user.role === AppRoles.app_admin &&

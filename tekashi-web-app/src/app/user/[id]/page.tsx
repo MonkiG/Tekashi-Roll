@@ -4,6 +4,7 @@ import { getUserBySession } from '@/app/services/authServices'
 import { getUserRoleBySession } from '@/app/services/userServices'
 import { type User } from '@/app/types'
 import { redirect } from 'next/navigation'
+import Form from '../form.client'
 
 export default async function UserId ({ params }: { params: { id: string } }): Promise<JSX.Element> {
   const userQuery = await getUserBySession()
@@ -17,16 +18,19 @@ export default async function UserId ({ params }: { params: { id: string } }): P
     user = userQuery.user_metadata
     user.id = userQuery.id
     user.role = userRole
+    user.email = userQuery.email
   }
 
   return (
     <>
       <ClientViewHeader user={user as User | undefined}/>
-        <h2 className='uppercase'>
-          informacion de cuenta
-        </h2>
-
-      <Footer />
+       <section className='flex flex-col items-center'>
+          <h2 className='uppercase text-center my-5'>
+            informacion de cuenta
+          </h2>
+          <Form user={user}/>
+       </section>
+      <Footer/>
     </>
   )
 }
