@@ -3,7 +3,6 @@ import Link from 'next/link'
 export default function Checkout ({ searchParams }: { searchParams: { cart: string } }): JSX.Element {
   const { cart } = searchParams
   const parseredCart = JSON.parse(cart)
-  // const test = Array.from({ length: 1 }).map(_ => ({ ...parseredCart }))
   const totalToPay = parseredCart.reduce((prev: any, curr: any) => prev + curr.price, 0)
   const totalItems = parseredCart.reduce((prev: any, curr: any) => prev + curr.amount, 0)
   return (
@@ -28,7 +27,7 @@ export default function Checkout ({ searchParams }: { searchParams: { cart: stri
           <span>Total de productos: {totalItems} </span>
           <span>Total a pagar: ${totalToPay}</span>
         </div>
-        <Link href="/checkout/payment" className="">Pagar</Link>
+        <Link href={`/checkout/payment?products=${encodeURIComponent(cart)}`} className="">Pagar</Link>
       </div>
     </section>
   )

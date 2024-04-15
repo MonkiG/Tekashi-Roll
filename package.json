@@ -7,10 +7,17 @@
         "tekashi-web-app"
     ],
     "scripts": {
-      "dev:web": "cd ./tekashi-web-app && npm run dev",
-      "lint:web": "cd ./tekashi-web-app && npm run lint"
+        "dev:web": "cd ./tekashi-web-app && npm run dev",
+        "lint:web": "cd ./tekashi-web-app && npm run lint"
     },
     "keywords": [],
     "author": "",
-    "license": "ISC"
-  }
+    "license": "ISC",
+    "dependencies": {
+        "@stripe/react-stripe-js": "^2.7.0",
+        "@stripe/stripe-js": "^3.3.0",
+        "@types/node-fetch": "^2.6.11",
+        "next": "^14.2.1",
+        "stripe": "^15.1.0"
+    }
+}
