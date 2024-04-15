@@ -16,7 +16,7 @@ export default async function RootLayout ({
 }>): Promise<JSX.Element> {
   return (
     <html lang="es-mx">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen`}>
         {children}
       </body>
     </html>
