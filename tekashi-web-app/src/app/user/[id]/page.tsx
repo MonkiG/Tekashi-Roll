@@ -1,10 +1,7 @@
-import ClientViewHeader from '@/app/(client-view)/components/ClientViewHeader'
-import Footer from '@/app/components/Footer'
 import { getUserBySession } from '@/app/services/authServices'
-import { getUserRoleBySession } from '@/app/services/userServices'
-import { type User } from '@/app/types'
-import { redirect } from 'next/navigation'
 import Form from '../form.client'
+import { redirect } from 'next/navigation'
+import { getUserRoleBySession } from '@/app/services/userServices'
 
 export default async function UserId ({ params }: { params: { id: string } }): Promise<JSX.Element> {
   const userQuery = await getUserBySession()
@@ -20,17 +17,12 @@ export default async function UserId ({ params }: { params: { id: string } }): P
     user.role = userRole
     user.email = userQuery.email
   }
-
   return (
-    <>
-      <ClientViewHeader user={user as User | undefined}/>
-       <section className='flex flex-col items-center'>
-          <h2 className='uppercase text-center my-5'>
-            informacion de cuenta
-          </h2>
-          <Form user={user}/>
-       </section>
-      <Footer/>
-    </>
+    <section className='flex flex-col items-center'>
+      <h2 className='uppercase text-center my-5'>
+        informacion de cuenta
+      </h2>
+      <Form user={user}/>
+    </section>
   )
 }

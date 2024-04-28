@@ -19,7 +19,6 @@ export default function Payment ({ searchParams }: { searchParams: { products: s
     }) // eslint-disable-next-line
       .then((res) => res.json())
       .then((data) => {
-        console.log('Client log', data)
         setClientSecret(data.clientSecret)
       })
       .catch((e) => { console.error(e) })

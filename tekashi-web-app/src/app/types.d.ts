@@ -55,6 +55,7 @@ export interface Product {
   imgUrl: string
   categoryId: string
   enabled: boolean
+  amount: number
 }
 
 export type AddProduct = Omit<Product, 'id' | 'enabled'> & { imgUrl: string }

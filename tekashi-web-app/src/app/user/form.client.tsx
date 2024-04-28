@@ -79,7 +79,7 @@ export default function Form ({ user }: { user: any }): JSX.Element {
     <form onSubmit={handleSubmit} data-name="address" method='POST' className='flex flex-col w-full h-full justify-start items-start self-center border-l-2 border-gray-300'>
       <h3 className='my-4 text-center w-full border-b-2 border-gray-300'>Dirección</h3>
       <label htmlFor="state">Municipio</label>
-      <input type="text" value={'Bahía de Banderas'} className='bg-gray-300 w-full text-sm px-2'/>
+      <input type="text" value={'Bahía de Banderas'} readOnly className='bg-gray-300 w-full text-sm px-2'/>
       <label htmlFor="localidad">Localidad</label>
       <input
             name='localidad'

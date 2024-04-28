@@ -24,10 +24,11 @@ export default function UserCart ({ user }: { user: User }): JSX.Element {
   return (
    <>
     <button
-      className='hover:bg-page-black-hover p-2'
+      className='hover:bg-page-black-hover p-2 relative'
       onClick={() => { setShowCart(!showCart) }}
     >
       <Cart />
+      {products.length > 0 && <span className='bg-green-600 w-3 h-3 rounded-full absolute bottom-[10px] left-[5px] animate-pulse'></span>}
     </button>
     {showCart &&
         <section

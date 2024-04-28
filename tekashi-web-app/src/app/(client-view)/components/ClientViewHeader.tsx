@@ -5,6 +5,8 @@ import UserProfile from '@/app/components/UserProfile'
 import { type User } from '@/app/types'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useContext } from 'react'
+import { CartContext } from '../CartContext'
 
 export default function ClientViewHeader ({ className, user }: { className?: string, user?: User }): JSX.Element {
   return (
@@ -22,7 +24,7 @@ export default function ClientViewHeader ({ className, user }: { className?: str
                         <li className="flex justify-center hover:bg-page-black-hover hover:rounded-sm"><Link className="p-2" href={'/about-us'}>Nosotros</Link></li>
                     </ul>
                 </li>
-                {user === undefined
+                {!user
                   ? <MainButton content={'Login'} className={'w-1/12 '} />
                   : (
                     <li className='flex justify-center items-center'>

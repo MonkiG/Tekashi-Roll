@@ -2,16 +2,21 @@
 import { OrderStatus } from '@/app/helpers/OrderStatus'
 import Description from '@/app/components/icons/Description'
 import { type UUID } from 'crypto'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Bin from '@/app/components/icons/Bin'
 import Kitchen from '@/app/components/icons/Kitchen'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function Orders (): JSX.Element {
   const [view, setView] = useState({
-    togo: false,
-    orders: true
+    togo: true,
+    orders: false
   })
 
+  const supabaseRef = useRef(createClientComponentClient())
+
+  const [togos, setTogos] = useState<any[]>()
+  const [orders, setOrders] = useState<any[]>()
   const handleTogoView = (): void => {
     setView({
       togo: true,
@@ -25,6 +30,30 @@ export default function Orders (): JSX.Element {
       orders: true
     })
   }
+  useEffect(() => {
+    const date = new Date()
+    const fetchTogos = async (): Promise<any[]> => {
+      console.log(date.toISOString())
+      const { data, error } = await supabaseRef.current.from('togo').select('id, detail, total, status, user:users(id)').lte('date_time', date.toISOString()).not('status', 'eq', 'delivered')
+      console.log(data)
+      return data ?? []
+    }
+
+    fetchTogos().then((togos: any[]) => { setTogos(togos) }).catch(e => { console.error(e) })
+  }, [])
+
+  useEffect(() => {
+    const realtime = supabaseRef.current
+      .channel('togo')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'togo' }, (payload) => {
+        const { user_id: userId, id, detail, status, total, date_time: dateTime } = payload.new
+
+        setTogos(prev => ([...prev!, { detail, id, status, total, user: { id: userId } }]))
+      })
+      .subscribe()
+
+    return () => { realtime.unsubscribe().catch(e => { console.error(e) }) }
+  })
   return (
     <>
      <header className='grid grid-cols-5 items-center my-5'>
@@ -35,13 +64,11 @@ export default function Orders (): JSX.Element {
       </div>
      </header>
       <section className="h-[512px] w-[1029px] m-auto overflow-y-auto">
-        {Array.from({ length: 10 }, (_, i) => (
-
+        {
           view.togo
-            ? <OrderToGo key={crypto.randomUUID()} id={`Order ${i}`} orderNumber={i} user='Ramón Hernández' status={OrderStatus.PLACED}/>
-            : <Order key={crypto.randomUUID()}/>
-
-        ))}
+            ? (togos ? togos.map(togo => <OrderToGo key={togo.id} id={togo.id} user={togo.user} status={togo.status}/>) : null)
+            : (orders ? orders.map(order => <Order key={crypto.randomUUID()}/>) : null)
+        }
       </section>
     </>
   )
@@ -49,7 +76,6 @@ export default function Orders (): JSX.Element {
 
 interface OrderData {
   id: string | UUID
-  orderNumber: string | number
   user: string
   status: OrderStatus
 }
@@ -78,17 +104,26 @@ const Order = (): JSX.Element => {
 }
 
 const OrderToGo = (orderData: OrderData): JSX.Element => {
+  const [currentStatus, setCurrentStatus] = useState<OrderStatus>(orderData.status)
+  const supabase = useRef(createClientComponentClient())
+  const handleClickOrderStatus = (status: OrderStatus): (() => void) => () => {
+    if (status === currentStatus) return
+    setCurrentStatus(status)
+    setTimeout(async () => {
+      await supabase.current.from('togo').update({ status }).eq('id', orderData.id)
+    }, 600)
+  }
   return (
     <div className="grid grid-cols-9 grid-rows-1 relative w-full h-20">
       <ul className='flex justify-around items-center col-span-4 bg-gray-300'>
-        <li>Pedido: {orderData.orderNumber}</li>
-        <li>Usuario: {orderData.user}</li>
+        <li>Pedido: {orderData.id}</li>
+        <li>Usuario: {orderData.user.id}</li>
       </ul>
       {/** Estos botones le pondran el status al pedido */}
       <ul className='flex items-center justify-around col-span-4 bg-gray-300'>
         {Object.values(OrderStatus).map((status, i) => (
 
-          <li key={crypto.randomUUID()}><button className='bg-page-orange hover:bg-page-orange-hover rounded-full px-2 py-1' title={`Set order in status: ${status}`}>{status.toLocaleUpperCase()}</button></li>
+          <li key={crypto.randomUUID()} onClick={handleClickOrderStatus(status)}><button className={`${currentStatus === status ? 'bg-page-orange-hover' : 'bg-page-orange'} hover:bg-page-orange-hover rounded-full px-2 py-1`} title={`Set order in status: ${status}`}>{status.toLocaleUpperCase()}</button></li>
         ))}
       </ul>
       <div className='place-self-center'>

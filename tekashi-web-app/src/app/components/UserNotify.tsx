@@ -1,4 +1,5 @@
 'use client'
+// import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { type User } from '../types'
 import Ring from './icons/Ring'
 import { useState } from 'react'
@@ -6,6 +7,20 @@ import { useState } from 'react'
 export default function UserNotify ({ user }: { user: User }): JSX.Element {
   const [showNotify, setShowNotify] = useState(false)
   const [showBullet, setShowBullet] = useState(true)
+  //   const handleNotifies = (): void => {
+
+  //   }
+  //   useEffect(() => {
+  //     const supabase = createClientComponentClient()
+  //     const listener = supabase
+  //       .channel('')
+  //       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: '' }, handleNotifies)
+  //       .subscribe()
+
+  //     return () => {
+  //       listener.unsubscribe().catch(e => { console.error(e) })
+  //     }
+  //   }, [])
   return (
     <>
         <button
