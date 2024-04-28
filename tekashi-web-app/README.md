@@ -46,13 +46,12 @@ Build script allows to build the code to production:
 - Make the user page ✅
 - Do the payments behaviour ✅
 - make select payment method
-- Make user togo dashboard
-- Implement togo behaviour ⌛
-- Implement user notifications
+- Make user togo dashboard ✅
+- Implement togo behaviour ✅
+- Implement user notifications ⏳
+- implement kitchen behaviour ⏳
 
 - Bug header doest charge when login and navigate, reload needed
-- implement kitchen behaviour
 - Make About page
 - Implement stats
-
 - implement order behaviour
