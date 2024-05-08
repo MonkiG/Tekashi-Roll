@@ -58,4 +58,4 @@ export interface Product {
   amount: number
 }
 
-export type AddProduct = Omit<Product, 'id' | 'enabled'> & { imgUrl: string }
+export type AddProduct = Omit<Product, 'id' | 'enabled' | 'amount'> & { imgUrl: string }

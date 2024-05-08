@@ -18,8 +18,10 @@ export async function makeTogo (products: Product[], userId: UUID): Promise<void
     .insert({ detail: '', total: totalAmount, user_id: userId })
     .select()
     .single()
-  const { id: togoId } = togoData as Togo
-  const productTogoArray = products.map(product => ({ togo_id: togoId, product_id: product.id, product_amount: product.amount }))
-  const { error: productTogoError } = await supabase.from('product_togo').insert(productTogoArray).select()
-  console.error(productTogoError)
+  if (togoData) {
+    const { id: togoId } = togoData as Togo
+    const productTogoArray = products.map(product => ({ togo_id: togoId, product_id: product.id, product_amount: product.amount }))
+    const { error: productTogoError } = await supabase.from('product_togo').insert(productTogoArray).select()
+    console.error(productTogoError)
+  }
 }

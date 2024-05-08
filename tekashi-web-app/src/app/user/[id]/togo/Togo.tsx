@@ -29,11 +29,11 @@ export default function TogoComponent ({ data }: { data: GroupedData }): JSX.Ele
 
   return (
         <article className='px-5'>
-            <h2>Orden: {data.id}</h2>
+            <h2>Orden: {data.id.slice(-4)}</h2>
 
             <div className='flex justify-between'>
                 <div>
-                    total: <span>$ {data.total} MXN</span>
+                    Total: <span>$ {data.total} MXN</span>
                 </div>
                 <div>
                     status: <span
@@ -45,7 +45,8 @@ export default function TogoComponent ({ data }: { data: GroupedData }): JSX.Ele
                         }>{statusDictionary[status]}</span>
                 </div>
                 <div>
-                    productos: <span>{data.products.length}</span>
+
+                    productos: <span>{data.products.reduce((prev, curr) => prev + curr.amount, 0) || data.products.length}</span>
                 </div>
             </div>
 

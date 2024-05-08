@@ -5,11 +5,10 @@ import { getUserRoleBySession } from '../services/userServices'
 import { type User } from '../types'
 import { CartProvider } from './CartContext'
 import ClientViewHeader from './components/ClientViewHeader'
-import { redirect } from 'next/navigation'
 
 export default async function MainRouteLayout ({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
   const userQuery = await getUserBySession()
-  let user: User
+  let user: User | undefined
 
   /* hacer un getUserCredentials */
   if (userQuery) {
@@ -17,14 +16,12 @@ export default async function MainRouteLayout ({ children }: { children: React.R
     user = userQuery.user_metadata as User
     user.id = userQuery.id as UUID
     user.role = userRole
-  } else {
-    redirect('/auth/login')
   }
   return (
     <main className='min-h-screen flex flex-col justify-between'>
       <CartProvider>
 
-         {user && <ClientViewHeader user={user} />}
+         {user ? <ClientViewHeader user={user}/> : <ClientViewHeader />}
             {children}
           <Footer className='pb-0' />
 

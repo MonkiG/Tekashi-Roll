@@ -2,10 +2,13 @@
 import { OrderStatus } from '@/app/helpers/OrderStatus'
 import Description from '@/app/components/icons/Description'
 import { type UUID } from 'crypto'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Bin from '@/app/components/icons/Bin'
 import Kitchen from '@/app/components/icons/Kitchen'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import useTogos from '@/app/hooks/useTogos'
+import useOrders from '@/app/hooks/useOrders'
+import { type User } from '@/app/types'
 
 export default function Orders (): JSX.Element {
   const [view, setView] = useState({
@@ -14,9 +17,9 @@ export default function Orders (): JSX.Element {
   })
 
   const supabaseRef = useRef(createClientComponentClient())
+  const { togos } = useTogos(supabaseRef.current)
+  const { orders } = useOrders(supabaseRef.current)
 
-  const [togos, setTogos] = useState<any[]>()
-  const [orders, setOrders] = useState<any[]>()
   const handleTogoView = (): void => {
     setView({
       togo: true,
@@ -30,30 +33,6 @@ export default function Orders (): JSX.Element {
       orders: true
     })
   }
-  useEffect(() => {
-    const date = new Date()
-    const fetchTogos = async (): Promise<any[]> => {
-      console.log(date.toISOString())
-      const { data, error } = await supabaseRef.current.from('togo').select('id, detail, total, status, user:users(id)').lte('date_time', date.toISOString()).not('status', 'eq', 'delivered')
-      console.log(data)
-      return data ?? []
-    }
-
-    fetchTogos().then((togos: any[]) => { setTogos(togos) }).catch(e => { console.error(e) })
-  }, [])
-
-  useEffect(() => {
-    const realtime = supabaseRef.current
-      .channel('togo')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'togo' }, (payload) => {
-        const { user_id: userId, id, detail, status, total, date_time: dateTime } = payload.new
-
-        setTogos(prev => ([...prev!, { detail, id, status, total, user: { id: userId } }]))
-      })
-      .subscribe()
-
-    return () => { realtime.unsubscribe().catch(e => { console.error(e) }) }
-  })
   return (
     <>
      <header className='grid grid-cols-5 items-center my-5'>
@@ -66,27 +45,56 @@ export default function Orders (): JSX.Element {
       <section className="h-[512px] w-[1029px] m-auto overflow-y-auto">
         {
           view.togo
-            ? (togos ? togos.map(togo => <OrderToGo key={togo.id} id={togo.id} user={togo.user} status={togo.status}/>) : null)
-            : (orders ? orders.map(order => <Order key={crypto.randomUUID()}/>) : null)
+            ? (togos
+                ? togos.map(togo => <OrderToGo
+                  dateTime={togo.dateTime}
+                  key={togo.id}
+                  id={togo.id}
+                  user={togo.user}
+                  status={togo.status}
+                />)
+                : null)
+            : (orders
+                ? orders.map(order => <Order
+                  dateTime={order.dateTime}
+                  id={order.id}
+                  table={order.table}
+                  waiter={order.waiter ?? 'Ramón'}
+                  products={order.products}
+                  key={order.id}
+                />)
+                : null)
         }
       </section>
     </>
   )
 }
 
-interface OrderData {
+export interface TogoData {
   id: string | UUID
-  user: string
+  user: User
   status: OrderStatus
+  dateTime: string
 }
 
-const Order = (): JSX.Element => {
+export interface OrderData {
+  table: number | string
+  waiter: string
+  products: Array<{
+    name: string
+    amout: number | string
+  }>
+  id: string | UUID
+  dateTime: string
+}
+
+const Order = (order: OrderData): JSX.Element => {
   return (
     <div className='flex justify-around h-1/5 items-center bg-gray-300'>
       <div className='w-1/2'>
-        <span className='px-2'>Pedido: ###</span>
-        <span className='px-2'>Mesero: Ramón Hernández</span>
-        <span className='px-2'>Mesa: ###</span>
+        <span className='px-2'>Pedido: {order.id}</span>
+        <span className='px-2'>Mesero: {order.waiter}</span>
+        <span className='px-2'>Mesa: {order.table}</span>
       </div>
       <div className='flex justify-end'>
         <button title='See order description' className='px-2 bg-page-orange hover:bg-page-orange-hover rounded-full py-1 mx-2'>
@@ -103,7 +111,7 @@ const Order = (): JSX.Element => {
   )
 }
 
-const OrderToGo = (orderData: OrderData): JSX.Element => {
+const OrderToGo = (orderData: TogoData): JSX.Element => {
   const [currentStatus, setCurrentStatus] = useState<OrderStatus>(orderData.status)
   const supabase = useRef(createClientComponentClient())
   const handleClickOrderStatus = (status: OrderStatus): (() => void) => () => {
@@ -123,7 +131,7 @@ const OrderToGo = (orderData: OrderData): JSX.Element => {
       <ul className='flex items-center justify-around col-span-4 bg-gray-300'>
         {Object.values(OrderStatus).map((status, i) => (
 
-          <li key={crypto.randomUUID()} onClick={handleClickOrderStatus(status)}><button className={`${currentStatus === status ? 'bg-page-orange-hover' : 'bg-page-orange'} hover:bg-page-orange-hover rounded-full px-2 py-1`} title={`Set order in status: ${status}`}>{status.toLocaleUpperCase()}</button></li>
+          <li key={status} onClick={handleClickOrderStatus(status)}><button className={`${currentStatus === status ? 'bg-page-orange-hover' : 'bg-page-orange'} hover:bg-page-orange-hover rounded-full px-2 py-1`} title={`Set order in status: ${status}`}>{status.toLocaleUpperCase()}</button></li>
         ))}
       </ul>
       <div className='place-self-center'>

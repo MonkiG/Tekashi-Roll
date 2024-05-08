@@ -5,7 +5,7 @@ import { type UUID } from 'crypto'
 export default async function Checkout ({ searchParams }: { searchParams: { cart: string } }): Promise<JSX.Element> {
   const { cart } = searchParams
   const parseredCart = JSON.parse(cart)
-  const totalToPay = parseredCart.reduce((prev: any, curr: any) => prev + curr.price, 0)
+  const totalToPay = parseredCart.reduce((prev: any, curr: any) => prev + (curr.price * curr.amount), 0)
   const totalItems = parseredCart.reduce((prev: any, curr: any) => prev + curr.amount, 0)
   const user = await getUserBySession()
   return (
