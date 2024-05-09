@@ -11,7 +11,7 @@ interface Togo {
   products_amount: number
   total: number
 }
-export async function makeTogo (products: Product[], userId: UUID): Promise<void> {
+export async function makeTogo (products: Product[], userId: UUID, userAddress: Record<string, string>): Promise<void> {
   const supabase = createClientComponentClient()
   const totalAmount = products.reduce((prev, curr) => prev + (parseFloat(curr.price as string) * curr.amount), 0)
   const { data: togoData } = await supabase.from('togo')

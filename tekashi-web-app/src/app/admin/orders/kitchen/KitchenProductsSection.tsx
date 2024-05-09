@@ -1,12 +1,23 @@
 'use client'
+import { OrderStatus } from '@/app/helpers/OrderStatus'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useEffect, useState } from 'react'
+import { type UUID } from 'crypto'
+import { useEffect, useRef, useState } from 'react'
 
 export default function KitchenProductsSection (): JSX.Element {
-  const [products, setProducts] = useState<any[]>()
+  const [products, setProducts] = useState<any[]>([])
+  const supabaseRef = useRef(createClientComponentClient())
   useEffect(() => {
-    const supabase = createClientComponentClient()
-    const realTime = supabase
+    ;(async () => {
+      const { data: todayProducts } = await supabaseRef.current.from('product_togo').select('product:products(*), togo:togo_id!inner(*)').not('togo_id.status', 'eq', 'delivered').not('togo_id.status', 'eq', 'delivering')
+      if (todayProducts) {
+        setProducts(todayProducts.map(x => ({ togoId: x.togo.id, product: x.product })))
+      }
+    })().catch(e => { console.error(e) })
+  }, [])
+
+  useEffect(() => {
+    const realTime = supabaseRef.current
       .channel('product_togo')
       .on(
         'postgres_changes',
@@ -15,37 +26,60 @@ export default function KitchenProductsSection (): JSX.Element {
           schema: 'public',
           table: 'product_togo'
         },
-        (payload) => {
-        // const {id, togo_id, product_id, product_amount} = payload.new
-          console.log(payload.new)
+        async (payload) => {
+          const { id, togo_id, product_id, product_amount } = payload.new
+
+          const { data: product } = await supabaseRef.current.from('products').select('*').eq('id', product_id).single()
+
+          setProducts(prev => [...prev, { togoId: togo_id, product }])
         })
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'togo'
+        },
+        async (payload) => {
+          const { id: togoId, status } = payload.new
+
+          if (status === OrderStatus.DELIVERING || status === OrderStatus.DELIVERED) {
+            setProducts(prev => {
+              return prev.filter(x => x.togoId !== togoId)
+            })
+          }
+          // const { data: product } = await supabaseRef.current.from('products').select('*').eq('id', product_id).single()
+
+        // setProducts(prev => [...prev, product])
+        }
+      )
+      .subscribe()
 
     return () => { realTime.unsubscribe().catch(e => { console.error(e) }) }
   }, [])
+
   return (
-        <section className="h-[512px] w-[1029px] m-auto overflow-y-auto">
-        {products
-          ? products.map(product => (
-
-            <Order key={crypto.randomUUID()} id={`Order ${i}`} orderNumber={i} user='Ramón Hernández' status={OrderStatus.PLACED}/>
-
-          ))
-          : null}
-         </section>
+    <section className="h-[512px] w-full overflow-y-auto bg-gray-300">
+      {products.length > 0
+        ? products.map(product => <Order key={product.id} product={product}/>)
+        : null}
+    </section>
   )
 }
 
-const Order = (id: any): JSX.Element => {
+const Order = ({ product }: { product: any }): JSX.Element => {
   return (
-          <article className="bg-gray-300 h-1/4 border-2 border-solid border-orange-200">
-              <div>
+          <article className="bg-gray-300 px-2 border-2 border-solid border-orange-200">
+            <h2 className='text-2xl'>Producto: {product.product.name}</h2>
+            <h2>Pedido: {product.togoId.slice(-4)}</h2>
+              {/* <div>
                   <span className='px-5'>Pedido: </span>
                   <span className='px-5'>Mesero: </span>
                   <span className='px-5'>Mesa: </span>
               </div>
               <div className='px-5'>
                   Detalle:
-              </div>
+              </div> */}
           </article>
   )
 }

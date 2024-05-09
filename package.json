@@ -14,9 +14,13 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@mui/x-charts": "^7.3.2",
         "@stripe/react-stripe-js": "^2.7.0",
         "@stripe/stripe-js": "^3.3.0",
+        "@supabase/ssr": "^0.3.0",
         "@types/node-fetch": "^2.6.11",
+        "chart.js": "^4.4.2",
+        "moment-timezone": "^0.5.45",
         "next": "^14.2.1",
         "sonner": "^1.4.41",
         "stripe": "^15.1.0"

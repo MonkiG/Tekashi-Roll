@@ -5,9 +5,11 @@ import { getUserRoleBySession } from '@/app/services/userServices'
 import { type User } from '@/app/types'
 import { redirect } from 'next/navigation'
 import { type ReactNode } from 'react'
+import { CartProvider } from '../(client-view)/CartContext'
 
 export default async function UserLayout ({ children }: { children: ReactNode }): Promise<JSX.Element> {
   const userQuery = await getUserBySession()
+
   let user
 
   /* hacer un getUserCredentials */
@@ -18,14 +20,15 @@ export default async function UserLayout ({ children }: { children: ReactNode })
     user = userQuery.user_metadata
     user.id = userQuery.id
     user.role = userRole
-    user.email = userQuery.email
   }
 
   return (
-    <div className='min-h-screen flex flex-col justify-between'>
+    <CartProvider>
+      <div className='min-h-screen flex flex-col md:justify-between'>
         <ClientViewHeader user={user as User | undefined}/>
             {children}
         <Footer/>
     </div>
+    </CartProvider>
   )
 }

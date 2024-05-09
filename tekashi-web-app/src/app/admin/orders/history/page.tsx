@@ -1,23 +1,17 @@
-import { getServerComponentClient } from '@/app/helpers/supabaseHelpers'
-import { getUserBySession } from '@/app/services/authServices'
-import { redirect } from 'next/navigation'
-import moment from 'moment-timezone'
-import Link from 'next/link'
 import Missing from '@/app/components/Missing'
-export default async function TogoHistoryPage (): Promise<JSX.Element> {
-  const supabase = getServerComponentClient()
-  const user = await getUserBySession()
-  if (!user) redirect('/')
+import { getServerComponentClient } from '@/app/helpers/supabaseHelpers'
+import moment from 'moment-timezone'
 
-  const { data: togos } = await supabase.from('togo').select('*').eq('user_id', user.id)
+export default async function OrdersHistory (): Promise<JSX.Element> {
   const statusDictionary: Record<string, string> = {
     preparing: 'En preparación',
     delivering: 'En reparto',
     delivered: 'Entregado'
   }
+  const supabase = getServerComponentClient()
+  const { data: togos } = await supabase.from('togo').select('*, user:users(*)')
   return (
-    <div className='h-full flex flex-col grow relative'>
-      <Link href={`/user/${user.id}/togo`} className='absolute left-5 top-5 underline py-1'>Regresar</Link>
+    <div className='h-full flex flex-col grow relative '>
       <h2 className='text-center text-2xl py-5'>Historial de pedidos</h2>
       <div className='flex flex-col mx-5 overflow-y-auto'>
         {

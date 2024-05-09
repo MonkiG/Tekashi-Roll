@@ -1,26 +1,40 @@
-'use client'
-// import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+'use client'// import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { type User } from '../types'
 import Ring from './icons/Ring'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { type OrderStatus } from '../helpers/OrderStatus'
+import { type UUID } from 'crypto'
+
+interface Notification {
+  status: OrderStatus
+  orderId: UUID
+  id: UUID
+}
 export default function UserNotify ({ user }: { user: User }): JSX.Element {
   const [showNotify, setShowNotify] = useState(false)
-  const [showBullet, setShowBullet] = useState(true)
-  //   const handleNotifies = (): void => {
+  const [showBullet, setShowBullet] = useState(false)
+  const [notifications, setNotifications] = useState<Notification[]>([])
 
-  //   }
-  //   useEffect(() => {
-  //     const supabase = createClientComponentClient()
-  //     const listener = supabase
-  //       .channel('')
-  //       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: '' }, handleNotifies)
-  //       .subscribe()
+  useEffect(() => {
+    const supabase = createClientComponentClient()
+    const realtime = supabase
+      .channel('togo')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'togo' }, (payload) => {
+        const { status, id } = payload.new
+        setNotifications(prev => [...prev, { id: crypto.randomUUID() as UUID, orderId: id, status: status as OrderStatus }])
+        setShowBullet(true)
+      }).subscribe()
 
-  //     return () => {
-  //       listener.unsubscribe().catch(e => { console.error(e) })
-  //     }
-  //   }, [])
+    return () => { realtime.unsubscribe().catch(e => { console.error(e) }) }
+  }, [])
+
+  const statusDictionary = {
+    preparing: 'Tu orden esta en preparación',
+    delivering: 'Tu orden esta en camino',
+    delivered: 'Tu orden ha sido entregada'
+  }
   return (
     <>
         <button
@@ -40,7 +54,16 @@ export default function UserNotify ({ user }: { user: User }): JSX.Element {
                     >X</button>
                 </header>
                 <ul>
-                    <li>Notificacion</li>
+                    {notifications?.map(notification => (
+                        <li className={
+                            `${notification.status === 'preparing' && 'bg-page-red'} 
+                            ${notification.status === 'delivering' && 'bg-page-orange'}
+                            ${notification.status === 'delivered' && 'bg-green-700'}`}
+                            key={notification.id}
+                        >
+                            Your order is {statusDictionary[notification.status]}
+                        </li>
+                    ))}
                 </ul>
             </section>
         }

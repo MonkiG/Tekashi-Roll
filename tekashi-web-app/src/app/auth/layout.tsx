@@ -10,9 +10,9 @@ export default async function AuthLayout ({ children }: { children: React.ReactN
   if (user) redirect(`/user/${user.id}`)
 
   return (
-        <section className="flex flex-col justify-between h-screen">
+        <section className="flex flex-col justify-between items-center h-screen">
             <AuthHeader />
-            <main className="flex flex-col justify-center items-center border-solid border-red-700 border-2 w-1/4 m-auto my-10 rounded-lg">
+            <main className="flex flex-col justify-center items-center border-solid border-red-700 border-2 min-w-1/2  my-10 rounded-lg p-5">
                 {children}
             </main>
             <Footer className="p-3"/>

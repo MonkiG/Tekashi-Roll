@@ -1,4 +1,5 @@
 import { type UserSignUp, type UserLoginWithPasswordData, type AuthType } from '@/app/types'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { type SupabaseClient } from '@supabase/supabase-js'
 
 export async function logInUser (formData: UserLoginWithPasswordData, supabase: SupabaseClient): Promise<{ error: any, userId: string | undefined }> {
@@ -34,8 +35,22 @@ export async function signUpUser (formData: UserSignUp, supabase: SupabaseClient
     userId: data.user?.id
   }
 }
+
+export async function signInWithGoogle (): Promise<void> {
+  const supabase = createClientComponentClient()
+  await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'http://localhost:3000/auth/google',
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent'
+      }
+    }
+  })
+}
 /* eslint-disable-next-line */
-export default async function authHandlers (type: AuthType, formData: UserLoginWithPasswordData | UserSignUp, supabase: SupabaseClient): Promise<void | { error: any, userId: string | undefined }> {
+export default async function authHandlers (type: AuthType, formData: UserLoginWithPasswordData | UserSignUp, supabase: SupabaseClient): Promise<{ error: any, userId: string | undefined }> {
   if (type === 'login') {
     const { userId, error } = await logInUser(formData, supabase)
     return {
@@ -43,7 +58,13 @@ export default async function authHandlers (type: AuthType, formData: UserLoginW
       userId
     }
   }
-  if (type === 'signup') { await signUpUser(formData as UserSignUp, supabase); return }
+  if (type === 'signup') {
+    const { error, userId } = await signUpUser(formData as UserSignUp, supabase)
+    return {
+      error,
+      userId
+    }
+  }
 
   throw new Error("Auth type don't allowed")
 }

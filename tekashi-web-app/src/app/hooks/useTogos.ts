@@ -1,14 +1,14 @@
 import { type SupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState } from 'react'
 import { type TogoData } from '../admin/orders/page'
-import { type User } from '../types'
+import { type UUID } from 'crypto'
 
-export default function useTogos (supabase: SupabaseClient): { togos: TogoData[] | undefined } {
+export default function useTogos (supabase: SupabaseClient): { togos: TogoData[] | undefined, handleTogos: (id: UUID) => void } {
   const [togos, setTogos] = useState<TogoData[]>()
   useEffect(() => {
     const date = new Date()
     const fetchTogos = async (): Promise<any[]> => {
-      const { data } = await supabase.from('togo').select('id, detail, total, status, user:users(id)').lte('date_time', date.toISOString()).not('status', 'eq', 'delivered')
+      const { data } = await supabase.from('togo').select('id, detail, total, status, user:users!inner(*)').lte('date_time', date.toISOString()).not('status', 'eq', 'delivered')
       return data ?? []
     }
 
@@ -20,15 +20,24 @@ export default function useTogos (supabase: SupabaseClient): { togos: TogoData[]
   useEffect(() => {
     const realtime = supabase
       .channel('togo')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'togo' }, (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'togo' }, async (payload) => {
         const { user_id: userId, id, detail, status, total, date_time: dateTime } = payload.new
 
+        const { data: user } = await supabase.from('users').select('*').eq('id', userId).single()
+
+        setTogos(prev => ([...prev!, { detail, id, status, total, dateTime, user: { id: user.id, localidad: user.localidad, street: user.street, home: user.home } }]))
         /* eslint-disable-next-line */
-        setTogos(prev => ([...prev!, { detail, id, status, total, dateTime, user: { id: userId } as User }]))
       })
       .subscribe()
 
     return () => { realtime.unsubscribe().catch(e => { console.error(e) }) }
   })
-  return ({ togos })
+
+  const handleTogos = (id: UUID): void => {
+    setTogos(prev => {
+      if (!prev) return []
+      return prev.filter(x => x.id !== id)
+    })
+  }
+  return ({ togos, handleTogos })
 }

@@ -18,10 +18,10 @@ export default async function MainRouteLayout ({ children }: { children: React.R
     user.role = userRole
   }
   return (
-    <main className='min-h-screen flex flex-col justify-between'>
+    <main className='min-h-screen flex flex-col md:justify-between'>
       <CartProvider>
 
-         {user ? <ClientViewHeader user={user}/> : <ClientViewHeader />}
+         <ClientViewHeader user={user}/>
             {children}
           <Footer className='pb-0' />
 

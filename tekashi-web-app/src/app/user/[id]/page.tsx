@@ -5,6 +5,7 @@ import { getUserRoleBySession } from '@/app/services/userServices'
 
 export default async function UserId ({ params }: { params: { id: string } }): Promise<JSX.Element> {
   const userQuery = await getUserBySession()
+
   let user
 
   /* hacer un getUserCredentials */
@@ -15,6 +16,7 @@ export default async function UserId ({ params }: { params: { id: string } }): P
     user = userQuery.user_metadata
     user.id = userQuery.id
     user.role = userRole
+    user.email = userQuery.email
     user.email = userQuery.email
   }
   return (

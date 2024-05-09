@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function Footer ({ className }: { className?: string }): JSX.Element {
   return (
-      <footer className={`flex items-center justify-around px-16 py-5 ${className}`}>
+      <footer className={`md:flex items-center justify-around px-16 py-5 hidden ${className}`}>
           <Image src="/brand-logo.jpeg" alt="tekashi roll logo" className="w-1/12 rounded-full" width={51} height={51} />
           <section className="w-1/4 ">
               <h3 className="text-center font-bold">Tekashi Roll</h3>

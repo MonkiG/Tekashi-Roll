@@ -40,3 +40,9 @@ npm install
 - Agregar CRUD productos admin ⏳
 - Agregar CRUD pedidos admin
 - Agregar estadisticas admin
+
+# stats
+- ventas del dia
+- productos mas vendido a la semana
+- productos mas vendidos al mes
+- ventas mensuales

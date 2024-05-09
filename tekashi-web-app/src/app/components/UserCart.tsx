@@ -40,7 +40,7 @@ export default function UserCart ({ user }: { user: User }): JSX.Element {
                 onClick={() => { setShowCart(false) }}
               >X</button>
             </header>
-            <ul className='overflow-auto'>
+            <ul className='overflow-auto grow'>
                 {products
                   ? products.map(product => <ECartProduct
                                                         handleDeleteProduct={() => { handleDeleteTogoProduct({ productId: product.id }) }}
@@ -101,7 +101,7 @@ const ECartProduct = ({
     <>
       <li className='flex my-3 text-sm relative'>
         <button className='absolute right-2 top-[-7px]' onClick={handleDeleteProduct}>x</button>
-        <Image src={product.imgUrl} alt="product image" width={96} height={40} className='mx-1 w-24 h-10' />
+        <Image src={product.imgUrl} alt="product image" width={96} height={40} className='mx-1 w-24 h-10 object-cover' />
         <div className='text-xs flex flex-col justify-center mx-3'>
             <span className='block'>{product.name}</span>
             <span className='block'>Precio: ${parseFloat(product.price as string) * parseInt(product.amount as string)} MXN</span>

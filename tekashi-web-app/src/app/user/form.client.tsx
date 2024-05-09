@@ -1,49 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { CartContext } from '../(client-view)/CartContext'
+import { Toaster, toast } from 'sonner'
 
 export default function Form ({ user }: { user: any }): JSX.Element {
-  const [enableUserEdit, setEnableUserEdit] = useState(false)
-  const [data, setData] = useState({
+  const { userAccountInfo, handleChange, enableUserEdit, handleSubmit, handleEnableUserEdit } = useContext(CartContext)
+
+  const [data] = useState({
     name: `${user.name} ${user.lastName}`,
     localidad: 'Altavela',
     ...user
   })
 
-  const handleChange = (e: any): void => {
-    const { name, value } = e.target
-    if (name === 'phone' && value.length > 10) return
-    setData((prev: any) => {
-      return { ...prev, [name]: value }
-    })
-  }
-
-  const handleClick = (e): void => {
+  const handleClick = (e: any): void => {
     const { name } = e.target
 
     if (name === 'enable-general') {
-      setEnableUserEdit(!enableUserEdit)
+      handleEnableUserEdit(!enableUserEdit)
     }
   }
 
-  const handleSubmit = (e): void => {
-    e.preventDefault()
-
-    const { name } = e.target.dataset
-    if (name === 'general') {
-      // editar usuario
-    }
-
-    if (name === 'address') {
-      // editar address
-
-      const { home, street, localidad } = data
-      // Actualizar address data
-    }
+  const handleFormChange = (e: any): void => {
+    handleChange(e)
   }
 
   return (<div className='flex w-full h-72'>
-    <form method='POST' data-name='general' onSubmit={handleSubmit} className='flex flex-col w-full h-full justify-start items-start self-center '>
+    <Toaster richColors position='top-center'/>
+    <form method='POST' data-name='general' onSubmit={(e: any) => { handleSubmit(e, toast) }} className='flex flex-col w-full h-full justify-start items-start self-center '>
       <h3 className='my-4 text-center w-full border-b-2 border-gray-300'>Informacion general</h3>
       <label htmlFor="name">Nombre</label>
       <input
@@ -54,14 +38,14 @@ export default function Form ({ user }: { user: any }): JSX.Element {
             className='bg-gray-300 w-full text-sm px-2'
             onChange={handleChange}
         />
-      <label htmlFor="phone">Número de tléfono</label>
+      <label htmlFor="phone">Número de teléfono</label>
       <input
             type="tel"
             name='phone'
-            value={data.phone}
+            value={userAccountInfo.phone}
             disabled={!enableUserEdit}
             className='bg-gray-300 w-full text-sm px-2'
-            onChange={handleChange}
+            onChange={handleFormChange}
         />
       <label htmlFor="email">Correo electrónico</label>
       <input
@@ -76,7 +60,7 @@ export default function Form ({ user }: { user: any }): JSX.Element {
         <button onClick={handleClick} type='button' name='enable-general' className='w-full text-center'> {enableUserEdit ? 'Cancelar' : 'Editar'}</button>
     </form>
 
-    <form onSubmit={handleSubmit} data-name="address" method='POST' className='flex flex-col w-full h-full justify-start items-start self-center border-l-2 border-gray-300'>
+    <form onSubmit={(e: any) => { handleSubmit(e, toast) }} data-name="address" method='POST' className='flex flex-col w-full h-full justify-start items-start self-center border-l-2 border-gray-300'>
       <h3 className='my-4 text-center w-full border-b-2 border-gray-300'>Dirección</h3>
       <label htmlFor="state">Municipio</label>
       <input type="text" value={'Bahía de Banderas'} readOnly className='bg-gray-300 w-full text-sm px-2'/>
@@ -84,18 +68,18 @@ export default function Form ({ user }: { user: any }): JSX.Element {
       <input
             name='localidad'
             type="text"
-            value={data.localidad}
+            value={userAccountInfo.localidad}
             className='w-full text-sm px-2 bg-gray-200'
             required
-            onChange={handleChange}
+            onChange={(e) => { handleChange(e, toast) }}
         />
       <label htmlFor="street">Calle</label>
-      <input type="text" value={data.street} name='street' className='w-full text-sm px-2 bg-gray-200' required
-            onChange={handleChange}
+      <input type="text" value={userAccountInfo.street} name='street' className='w-full text-sm px-2 bg-gray-200' required
+            onChange={handleFormChange}
         />
       <label htmlFor="home">Numero</label>
-      <input type="number" value={data.home} name='home' className='w-full text-sm px-2 bg-gray-200' required
-            onChange={handleChange}
+      <input type="number" value={userAccountInfo.home} name='home' className='w-full text-sm px-2 bg-gray-200' required
+            onChange={handleFormChange}
         />
       <button type='submit' className='w-full text-center'>Actualizar</button>
     </form>

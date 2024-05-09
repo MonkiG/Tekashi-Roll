@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation'
 import { type Product } from '@/app/types'
 import { makeTogo } from '@/app/services/togoServices'
 import { type UUID } from 'crypto'
-export default function CheckoutButton ({ cart, userId }: { cart: string, userId: UUID }): JSX.Element {
+import { Toaster, toast } from 'sonner'
+export default function CheckoutButton ({ cart, userId, address }: { cart: string, userId: UUID, address: Record<string, string> }): JSX.Element {
   const cardParsered = JSON.parse(cart) as Product[]
-
   const [showModal, setShowModal] = useState(false)
   const [error, setError] = useState<string>('')
   const [productsCount] = useState<number>(cardParsered.reduce((prev, curr, i) => prev + curr.amount, 0))
@@ -17,11 +17,20 @@ export default function CheckoutButton ({ cart, userId }: { cart: string, userId
   const router = useRouter()
 
   const handleClickCash = async (): Promise<void> => {
+    const canContinue = Object.values(address).every(x => x !== '')
+    console.log(canContinue)
     if (productsCount >= 10 || totalAmount > 1500) {
       setError('Para pagar en efectivo el total debe ser menor a 1500 y la cantidad de productos debe ser menor de 10.')
+    } else if (!canContinue) {
+      toast.error('Tienes que validar tu dirección', {
+        action: {
+          label: 'Ir a mi dirección',
+          onClick: () => { router.push(`/user/${userId}`) }
+        }
+      })
     } else {
       // Enviar a la db
-      await makeTogo(cardParsered, userId)
+      await makeTogo(cardParsered, userId, address)
       router.push(`/user/${userId}/togo`)
     }
   }
@@ -36,7 +45,10 @@ export default function CheckoutButton ({ cart, userId }: { cart: string, userId
 
   return (
         <>
-            <button onClick={() => { setShowModal(!showModal) }}>Pagar</button>
+          <Toaster position="top-center" richColors />
+            <button
+              className='flex content-center text-page-orange py-1 px-2 text-center bg-page-red hover:bg-page-red-hover rounded-sm'
+              onClick={() => { setShowModal(!showModal) }}>Pagar</button>
             {showModal && <Modal className='flex justify-evenly items-center'>
                 {
                   !error

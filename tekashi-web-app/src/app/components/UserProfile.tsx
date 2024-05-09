@@ -26,24 +26,24 @@ export default function UserProfile ({ user }: { user: User }): JSX.Element {
         </button>
         {
             showProfilePreview &&
-            <section className='absolute bg-white right-[260px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col'>
-            <header className='relative bg-gray-300 font-[Lalezar] p-5'>
-                <h3 className='text-center uppercase'>Nombre de usuario</h3>
-                <button
-                    className='absolute right-4 top-2 font-sans'
-                    onClick={() => { setShowProfilePreview(false) }}
-                >X</button>
-            </header>
-            <ul>
-                <li><Link href={`/user/${user.id}`}>Ver perfil</Link></li>
-                <li><button onClick={handleSignOut}>Cerrar sesión</button></li>
-                <li><Link href={`/user/${user.id}/togo`}>Ver pedidos</Link></li>
-                {
-                    user.role === AppRoles.app_admin &&
-                    <li><Link href={'/admin'}>Panel administrador</Link></li>
-                }
-            </ul>
-        </section>
+            <section className='absolute bg-white right-[260px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col '>
+                <header className='relative bg-gray-300 font-[Lalezar] p-5'>
+                    <h3 className='text-center uppercase'>{user.name + (user.lastName ?? '')}</h3>
+                    <button
+                        className='absolute right-4 top-2 font-sans'
+                        onClick={() => { setShowProfilePreview(false) }}
+                    >X</button>
+                </header>
+                <ul className='h-full flex flex-col justify-evenly'>
+                    <li className='py-1 '><Link href={`/user/${user.id}`}>Ver perfil</Link></li>
+                    <li className='py-1 '><Link href={`/user/${user.id}/togo`}>Ver pedidos</Link></li>
+                    {
+                        user.role === AppRoles.app_admin &&
+                        <li className='py-1 '><Link href={'/admin'}>Panel administrador</Link></li>
+                    }
+                    <li className='py-1 '><button onClick={handleSignOut}>Cerrar sesión</button></li>
+                </ul>
+            </section>
         }
     </>
   )

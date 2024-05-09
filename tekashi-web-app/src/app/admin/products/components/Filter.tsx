@@ -16,9 +16,9 @@ export default function Filter (): JSX.Element {
         }
       </select>
       <label htmlFor="price">Precio: </label>
-      <input type="number" name="price" placeholder='$300 MXN' className='text-start px-2 outline-none' onChange={handleFilters} value={filters.price}/>
+      <input type="number" name="price" placeholder='$300 MXN' className='text-start px-2 outline-none w-1/2 md:w-full' onChange={handleFilters} value={filters.price}/>
       <label htmlFor="name">Producto: </label>
-      <input type="text" name="name" placeholder='Monkey Roll' className='text-start px-2 outline-none' onChange={handleFilters} value={filters.name}/>
+      <input type="text" name="name" placeholder='Monkey Roll' className='text-start px-2 outline-none w-1/2 md:w-full' onChange={handleFilters} value={filters.name}/>
     </form>
   )
 }
