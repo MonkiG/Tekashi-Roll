@@ -44,7 +44,7 @@ export default function useGetUserLocation (): { parseredPosition: HeroPosition,
 
     setParseredPosition({
       label: 'Tú ubicación',
-      position: `${fullUserAddressRef.current?.town}, ${fullUserAddressRef.current?.state.slice(0, 3)}.`
+      position: fullUserAddressRef.current ? `${fullUserAddressRef.current?.town}, ${fullUserAddressRef.current?.state.slice(0, 3)}.` : 'Ixtapa, Puerto Vallarta.'
     })
   }, [])
 

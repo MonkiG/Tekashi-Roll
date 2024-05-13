@@ -20,9 +20,10 @@ export default function UserNotify ({ user }: { user: User }): JSX.Element {
   useEffect(() => {
     const supabase = createClientComponentClient()
     const realtime = supabase
-      .channel('togo')
+      .channel('togo_status')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'togo' }, (payload) => {
         const { status, id } = payload.new
+        console.log(payload.new)
         setNotifications(prev => [...prev, { id: crypto.randomUUID() as UUID, orderId: id, status: status as OrderStatus }])
         setShowBullet(true)
       }).subscribe()

@@ -9,9 +9,19 @@ export default function KitchenProductsSection (): JSX.Element {
   const supabaseRef = useRef(createClientComponentClient())
   useEffect(() => {
     ;(async () => {
-      const { data: todayProducts } = await supabaseRef.current.from('product_togo').select('product:products(*), togo:togo_id!inner(*)').not('togo_id.status', 'eq', 'delivered').not('togo_id.status', 'eq', 'delivering')
+      const { data: todayProducts } = await supabaseRef.current.from('product_togo').select('amount:product_amount, product:products(*), togo:togo_id!inner(*)').not('togo_id.status', 'eq', 'delivered').not('togo_id.status', 'eq', 'delivering')
       if (todayProducts) {
-        setProducts(todayProducts.map(x => ({ togoId: x.togo.id, product: x.product })))
+        setProducts(todayProducts.flatMap(x => {
+          if (x.amount > 1) {
+            const products = []
+            for (let i = 0; i < x.amount; i++) {
+              products.push({ togoId: x.togo.id, product: x.product })
+            }
+            return products
+          } else {
+            return ({ togoId: x.togo.id, product: x.product })
+          }
+        }))
       }
     })().catch(e => { console.error(e) })
   }, [])
@@ -29,9 +39,11 @@ export default function KitchenProductsSection (): JSX.Element {
         async (payload) => {
           const { id, togo_id, product_id, product_amount } = payload.new
 
-          const { data: product } = await supabaseRef.current.from('products').select('*').eq('id', product_id).single()
+          for (let i = 0; i < product_amount; i++) {
+            const { data: product } = await supabaseRef.current.from('products').select('*').eq('id', product_id).single()
 
-          setProducts(prev => [...prev, { togoId: togo_id, product }])
+            setProducts(prev => [...prev, { togoId: togo_id, product }])
+          }
         })
       .on(
         'postgres_changes',
@@ -61,7 +73,7 @@ export default function KitchenProductsSection (): JSX.Element {
   return (
     <section className="h-[512px] w-full overflow-y-auto bg-gray-300">
       {products.length > 0
-        ? products.map(product => <Order key={product.id} product={product}/>)
+        ? products.map(product => <Order key={crypto.randomUUID()} product={product}/>)
         : null}
     </section>
   )

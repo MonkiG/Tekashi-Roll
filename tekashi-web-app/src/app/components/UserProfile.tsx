@@ -28,7 +28,7 @@ export default function UserProfile ({ user }: { user: User }): JSX.Element {
             showProfilePreview &&
             <section className='absolute bg-white right-[260px] top-12 z-10 min-h-80 min-w-80 max-h-[600px] rounded-sm flex flex-col '>
                 <header className='relative bg-gray-300 font-[Lalezar] p-5'>
-                    <h3 className='text-center uppercase'>{user.name + (user.lastName ?? '')}</h3>
+                    <h3 className='text-center uppercase'>{`${user.name} ${user.lastName ?? ''}`}</h3>
                     <button
                         className='absolute right-4 top-2 font-sans'
                         onClick={() => { setShowProfilePreview(false) }}

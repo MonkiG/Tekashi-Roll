@@ -17,7 +17,8 @@ export default function CheckoutButton ({ cart, userId, address }: { cart: strin
   const router = useRouter()
 
   const handleClickCash = async (): Promise<void> => {
-    const canContinue = Object.values(address).every(x => x !== '')
+    const canContinue = Object.values(address).every(x => x !== '' && x !== null)
+    console.log(address)
     console.log(canContinue)
     if (productsCount >= 10 || totalAmount > 1500) {
       setError('Para pagar en efectivo el total debe ser menor a 1500 y la cantidad de productos debe ser menor de 10.')

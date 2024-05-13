@@ -81,7 +81,7 @@ export default function TogoClientPage ({ user }: { user: User }): JSX.Element {
 
     return () => { realtime.unsubscribe().catch(e => { console.error(e) }) }
   }, [])
-  return (<section className={`w-full h-full flex flex-col  ${parseredTogos && parseredTogos.length <= 0 && 'justify-between'} grow relative`}>
+  return (<section className={'w-full h-full flex flex-col  grow relative'}>
     <h2 className="text-center text-2xl py-1">Pedidos</h2>
     <Link href={`/user/${user.id}/togo/history`} className='absolute top-0 right-5 underline py-1'>Ver historial de pedidos</Link>
     {parseredTogos && parseredTogos.length > 0 && parseredTogos?.map((togo) => {

@@ -11,9 +11,9 @@ export default function ClientViewHeader ({ className, user }: { className?: str
     <header className={`relative bg-page-black bg-header-image bg-right bg-no-repeat bg-[length:12%] h-[72px] ${className}`}>
         <nav>
             <ul className="flex w-full justify-around items-center content-center p-3 h-[72px]">
-                <li className={`${user ? 'flex' : 'w-12'} content-center items-center hidden md:block`}>
+                <li className={`${user ? 'flex' : 'w-12'} content-center items-center hidden md:flex`}>
                     <Link href="/"><Image src="/brand-logo.jpeg" alt="Tekashi-Roll logo" width={51} height={51} className="rounded-full"/></Link>
-                    {user && <Link href={`/user/${user.id}`} className="px-4 text-white">{user.name + (user.lastName ?? '')}</Link>}
+                    {user && <Link href={`/user/${user.id}`} className="px-4 text-white">{`${user.name} ${user.lastName ?? ''}`}</Link>}
                 </li>
                 <li>
                     <ul className="flex h-full text-white">
